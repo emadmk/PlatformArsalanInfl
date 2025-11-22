@@ -10,6 +10,7 @@ import logger from './config/logger';
 import { initializeDatabases } from './config/database';
 import { errorHandler, notFound } from './middleware/error.middleware';
 import { generalLimiter } from './middleware/rateLimit.middleware';
+import setupSocketHandlers from './socket/handlers';
 
 const app: Application = express();
 const httpServer = createServer(app);
@@ -48,18 +49,15 @@ app.use(`${config.apiPrefix}/auth`, require('./routes/auth.routes').default);
 app.use(`${config.apiPrefix}/projects`, require('./routes/project.routes').default);
 app.use(`${config.apiPrefix}/influencer`, require('./routes/influencer.routes').default);
 app.use(`${config.apiPrefix}/business`, require('./routes/business.routes').default);
-// Add more routes: task, chat, payment, admin, cms, upload
+app.use(`${config.apiPrefix}/tasks`, require('./routes/task.routes').default);
+app.use(`${config.apiPrefix}/chat`, require('./routes/chat.routes').default);
+app.use(`${config.apiPrefix}/payment`, require('./routes/payment.routes').default);
+app.use(`${config.apiPrefix}/admin`, require('./routes/admin.routes').default);
+app.use(`${config.apiPrefix}/cms`, require('./routes/cms.routes').default);
+app.use(`${config.apiPrefix}/upload`, require('./routes/upload.routes').default);
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
-  logger.info(`Socket connected: ${socket.id}`);
-
-  socket.on('disconnect', () => {
-    logger.info(`Socket disconnected: ${socket.id}`);
-  });
-
-  // Add socket event handlers here
-});
+setupSocketHandlers(io);
 
 // Error handling
 app.use(notFound);
