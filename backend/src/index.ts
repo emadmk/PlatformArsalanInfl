@@ -45,7 +45,10 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use(`${config.apiPrefix}/auth`, require('./routes/auth.routes').default);
-// Add more routes here as they are created
+app.use(`${config.apiPrefix}/projects`, require('./routes/project.routes').default);
+app.use(`${config.apiPrefix}/influencer`, require('./routes/influencer.routes').default);
+app.use(`${config.apiPrefix}/business`, require('./routes/business.routes').default);
+// Add more routes: task, chat, payment, admin, cms, upload
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
