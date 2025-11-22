@@ -1,227 +1,413 @@
 'use client';
 
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/shared/Button';
+import { Card, CardContent } from '@/components/shared/Card';
 
-export default function Home() {
-  const [stats, setStats] = useState({
-    users: 0,
-    projects: 0,
-    earnings: 0,
-  });
+export default function LandingPage() {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    // Animate numbers on mount
-    const targets = { users: 15420, projects: 3850, earnings: 2450000 };
-    const duration = 2000;
-    const steps = 60;
-    const interval = duration / steps;
-
-    let currentStep = 0;
-    const timer = setInterval(() => {
-      currentStep++;
-      const progress = currentStep / steps;
-
-      setStats({
-        users: Math.floor(targets.users * progress),
-        projects: Math.floor(targets.projects * progress),
-        earnings: Math.floor(targets.earnings * progress),
-      });
-
-      if (currentStep >= steps) clearInterval(timer);
-    }, interval);
-
-    return () => clearInterval(timer);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
-      {/* Header */}
-      <header className="container mx-auto px-4 py-6">
-        <nav className="flex justify-between items-center">
-          <div className="text-2xl font-bold text-primary-600">
-            Micro Influencer
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50">
+      {/* Navigation */}
+      <nav
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          scrolled ? 'bg-white/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                  InfluencerHub
+                </h1>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-center space-x-4">
+                <a href="#features" className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Features
+                </a>
+                <a href="#how-it-works" className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  How It Works
+                </a>
+                <a href="#pricing" className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Pricing
+                </a>
+                <Link href="/login">
+                  <Button variant="outline" size="sm">Login</Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm">Get Started</Button>
+                </Link>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <Link
-              href="/login"
-              className="px-6 py-2 text-primary-600 hover:text-primary-700"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-            >
-              Get Started
-            </Link>
-          </div>
-        </nav>
-      </header>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-          Connect with Authentic Micro Influencers
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Grow your brand with genuine voices. Join thousands of businesses and
-          influencers creating successful campaigns.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link
-            href="/register?type=business"
-            className="px-8 py-4 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition"
-          >
-            I'm a Business
-          </Link>
-          <Link
-            href="/register?type=influencer"
-            className="px-8 py-4 border-2 border-primary-600 text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition"
-          >
-            I'm an Influencer
-          </Link>
-        </div>
-      </section>
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="inline-block mb-4">
+              <span className="px-4 py-2 rounded-full bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 text-sm font-semibold">
+                🚀 The Future of Influencer Marketing
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
+              Connect Brands with
+              <span className="block bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent">
+                Authentic Influencers
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              The ultimate platform for influencer marketing campaigns with transparent pricing,
+              secure crypto payments, and real-time collaboration.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/register/influencer">
+                <Button size="lg" className="w-full sm:w-auto px-8 py-6 text-lg">
+                  Join as Influencer
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Button>
+              </Link>
+              <Link href="/register/business">
+                <Button size="lg" variant="secondary" className="w-full sm:w-auto px-8 py-6 text-lg">
+                  Start as Business
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </Button>
+              </Link>
+            </div>
+          </div>
 
-      {/* Stats Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
-            <div className="text-4xl font-bold text-primary-600 mb-2">
-              {stats.users.toLocaleString()}+
-            </div>
-            <div className="text-gray-600">Active Users</div>
-          </div>
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
-            <div className="text-4xl font-bold text-primary-600 mb-2">
-              {stats.projects.toLocaleString()}+
-            </div>
-            <div className="text-gray-600">Completed Projects</div>
-          </div>
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
-            <div className="text-4xl font-bold text-primary-600 mb-2">
-              ${(stats.earnings / 1000).toFixed(0)}K+
-            </div>
-            <div className="text-gray-600">Earned by Influencers</div>
+          {/* Animated Stats */}
+          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: '50K+', label: 'Active Influencers', icon: '👥' },
+              { value: '10K+', label: 'Campaigns Completed', icon: '✨' },
+              { value: '$10M+', label: 'Total Paid Out', icon: '💰' },
+              { value: '4.9/5', label: 'Average Rating', icon: '⭐' },
+            ].map((stat, index) => (
+              <Card key={index} hover className="text-center">
+                <CardContent className="p-6">
+                  <div className="text-4xl mb-2">{stat.icon}</div>
+                  <div className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</div>
+                  <div className="text-sm text-gray-600">{stat.label}</div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12">
-          Why Choose Our Platform?
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <FeatureCard
-            title="Verified Influencers"
-            description="All influencers are verified with real engagement metrics from their social platforms."
-            icon="✓"
-          />
-          <FeatureCard
-            title="Secure Payments"
-            description="Crypto-based escrow system ensures safe transactions for both parties."
-            icon="🔒"
-          />
-          <FeatureCard
-            title="Global Reach"
-            description="Connect with influencers and businesses from around the world in 10 languages."
-            icon="🌍"
-          />
-          <FeatureCard
-            title="Real-time Chat"
-            description="Direct communication between businesses and influencers for better collaboration."
-            icon="💬"
-          />
-          <FeatureCard
-            title="Task Management"
-            description="Track deliverables with deadlines and approval workflows."
-            icon="📋"
-          />
-          <FeatureCard
-            title="Analytics Dashboard"
-            description="Comprehensive insights into campaigns, earnings, and performance."
-            icon="📊"
-          />
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Everything You Need
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Powerful features designed for both influencers and businesses
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: '🔐',
+                title: 'Crypto Payments',
+                description: 'Secure USDT payments on Ethereum, BSC, and Tron networks with instant settlements',
+              },
+              {
+                icon: '✅',
+                title: 'Verified Influencers',
+                description: 'All influencers verified through official social media APIs for authenticity',
+              },
+              {
+                icon: '💬',
+                title: 'Real-time Chat',
+                description: 'Direct messaging with typing indicators and read receipts for seamless communication',
+              },
+              {
+                icon: '📊',
+                title: 'Advanced Analytics',
+                description: 'Track campaign performance, ROI, and engagement metrics in real-time',
+              },
+              {
+                icon: '🌍',
+                title: 'Multi-language',
+                description: 'Platform available in 10 languages for global reach',
+              },
+              {
+                icon: '🛡️',
+                title: 'Secure & Trusted',
+                description: 'Enterprise-grade security with escrow system for safe transactions',
+              },
+            ].map((feature, index) => (
+              <Card key={index} hover className="group">
+                <CardContent className="p-8">
+                  <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-20 bg-gradient-to-br from-primary-50 to-secondary-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Get started in just a few simple steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* For Influencers */}
+            <div>
+              <h3 className="text-2xl font-bold text-primary-600 mb-8 flex items-center">
+                <span className="bg-primary-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                  👤
+                </span>
+                For Influencers
+              </h3>
+              <div className="space-y-6">
+                {[
+                  { step: '1', title: 'Create Your Profile', desc: 'Sign up and connect your social media accounts' },
+                  { step: '2', title: 'Get Verified', desc: 'Complete verification to unlock all features' },
+                  { step: '3', title: 'Browse Projects', desc: 'Find campaigns that match your niche' },
+                  { step: '4', title: 'Apply & Collaborate', desc: 'Work with brands and complete tasks' },
+                  { step: '5', title: 'Get Paid', desc: 'Receive secure crypto payments instantly' },
+                ].map((item, index) => (
+                  <div key={index} className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                      {item.step}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">{item.title}</h4>
+                      <p className="text-gray-600 text-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* For Businesses */}
+            <div>
+              <h3 className="text-2xl font-bold text-secondary-600 mb-8 flex items-center">
+                <span className="bg-secondary-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                  🏢
+                </span>
+                For Businesses
+              </h3>
+              <div className="space-y-6">
+                {[
+                  { step: '1', title: 'Create Account', desc: 'Register your business and complete profile' },
+                  { step: '2', title: 'Create Campaign', desc: 'Set up your influencer marketing campaign' },
+                  { step: '3', title: 'Find Influencers', desc: 'Search and filter verified influencers' },
+                  { step: '4', title: 'Manage Projects', desc: 'Review applications and approve influencers' },
+                  { step: '5', title: 'Track Results', desc: 'Monitor performance with detailed analytics' },
+                ].map((item, index) => (
+                  <div key={index} className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                      {item.step}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">{item.title}</h4>
+                      <p className="text-gray-600 text-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Only pay when you succeed
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <Card hover className="border-2 border-primary-200">
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">For Influencers</h3>
+                <div className="mb-6">
+                  <span className="text-5xl font-extrabold text-primary-600">20%</span>
+                  <span className="text-gray-600 ml-2">commission</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">You keep 80% of earnings</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">Free to join and browse</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">Instant crypto payouts</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">No monthly fees</span>
+                  </li>
+                </ul>
+                <Link href="/register/influencer">
+                  <Button className="w-full" size="lg">Join as Influencer</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card hover className="border-2 border-secondary-200">
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">For Businesses</h3>
+                <div className="mb-6">
+                  <span className="text-5xl font-extrabold text-secondary-600">20%</span>
+                  <span className="text-gray-600 ml-2">platform fee</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">Access verified influencers</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">Unlimited campaigns</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">Advanced analytics</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">Secure escrow system</span>
+                  </li>
+                </ul>
+                <Link href="/register/business">
+                  <Button variant="secondary" className="w-full" size="lg">Start as Business</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-3xl p-12 text-white">
-          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8">
-            Join thousands of successful campaigns today
+      <section className="py-20 bg-gradient-to-r from-primary-600 to-secondary-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Ready to Get Started?
+          </h2>
+          <p className="text-xl text-white/90 mb-8">
+            Join thousands of influencers and businesses already using our platform
           </p>
-          <Link
-            href="/register"
-            className="inline-block px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition"
-          >
-            Sign Up Now
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white text-primary-600 hover:bg-gray-100 border-0 px-8 py-6 text-lg">
+                Create Free Account
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" className="w-full sm:w-auto bg-white/20 text-white hover:bg-white/30 border-2 border-white px-8 py-6 text-lg">
+                Sign In
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">Micro Influencer</h3>
-              <p className="text-gray-400">
-                Connecting authentic voices with brands worldwide.
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent mb-4">
+                InfluencerHub
+              </h3>
+              <p className="text-gray-400 text-sm">
+                The ultimate platform for connecting brands with authentic micro-influencers.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">For Businesses</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/features">Features</Link></li>
-                <li><Link href="/pricing">Pricing</Link></li>
-                <li><Link href="/case-studies">Case Studies</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">For Influencers</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/how-it-works">How It Works</Link></li>
-                <li><Link href="/success-stories">Success Stories</Link></li>
-                <li><Link href="/faq">FAQ</Link></li>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about">About Us</Link></li>
-                <li><Link href="/contact">Contact</Link></li>
-                <li><Link href="/privacy">Privacy Policy</Link></li>
-                <li><Link href="/terms">Terms of Service</Link></li>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            © 2024 Micro Influencer Platform. All rights reserved.
+          <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+            <p>© 2024 InfluencerHub. All rights reserved.</p>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function FeatureCard({
-  title,
-  description,
-  icon,
-}: {
-  title: string;
-  description: string;
-  icon: string;
-}) {
-  return (
-    <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
-      <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
     </div>
   );
 }
