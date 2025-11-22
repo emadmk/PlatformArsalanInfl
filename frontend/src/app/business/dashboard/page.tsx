@@ -51,17 +51,23 @@ export default function BusinessDashboard() {
     try {
       // Fetch dashboard stats
       const { data: statsData } = await api.get('/business/dashboard/stats');
-      setStats(statsData);
+      setStats({
+        activeCampaigns: statsData.activeCampaigns || 0,
+        totalInfluencers: statsData.totalInfluencers || 0,
+        completedProjects: statsData.completedProjects || 0,
+        totalSpent: statsData.totalSpent || 0,
+      });
 
       // Fetch recent campaigns
       const { data: campaignsData } = await api.get('/business/projects?limit=5');
-      setRecentCampaigns(campaignsData.projects);
+      setRecentCampaigns(campaignsData.projects || []);
 
       // Fetch top influencers
       const { data: influencersData } = await api.get('/business/influencers?limit=5');
-      setTopInfluencers(influencersData.influencers);
+      setTopInfluencers(influencersData.influencers || []);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Keep default values on error
     } finally {
       setIsLoading(false);
     }

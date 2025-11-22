@@ -277,6 +277,14 @@ export class AdminService {
     };
   }
 
+  async getPendingWithdrawalsCount(): Promise<number> {
+    const transactionRepo = AppDataSource.getRepository('transactions');
+    const count = await transactionRepo.count({
+      where: { type: 'withdrawal', status: 'pending' },
+    });
+    return count;
+  }
+
   async approveWithdrawal(withdrawalId: string, adminId: string): Promise<void> {
     const transactionRepo = AppDataSource.getRepository('transactions');
 

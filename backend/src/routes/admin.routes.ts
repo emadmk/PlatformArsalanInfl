@@ -2,7 +2,10 @@ import { Router, Response } from 'express';
 import { AuthRequest, authenticateToken, requireRole, requireAdminRole } from '@/middleware/auth.middleware';
 import adminService from '@/services/admin/admin.service';
 import projectService from '@/services/project/project.service';
-import { UserRole, AdminRole } from '@shared/types';
+import analyticsService from '@/services/analytics/analytics.service';
+import { User } from '@/models/User.model';
+import { Project } from '@/models/Project.model';
+import { UserRole, AdminRole, ProjectStatus } from '@shared/types';
 
 const router = Router();
 
@@ -10,11 +13,48 @@ const router = Router();
 router.use(authenticateToken);
 router.use(requireRole(UserRole.ADMIN));
 
-// Dashboard stats
+// Dashboard stats (legacy endpoint)
 router.get('/dashboard', async (req: AuthRequest, res: Response) => {
   try {
     const stats = await adminService.getDashboardStats();
     res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard stats (new endpoint)
+router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
+  try {
+    // Get comprehensive dashboard stats
+    const totalUsers = await User.countDocuments();
+    const totalInfluencers = await User.countDocuments({ role: UserRole.INFLUENCER });
+    const totalBusinesses = await User.countDocuments({ role: UserRole.BUSINESS });
+
+    const activeProjects = await Project.countDocuments({
+      status: { $in: [ProjectStatus.ACTIVE, ProjectStatus.IN_PROGRESS] },
+    });
+
+    // Get pending approvals count
+    const pendingProjects = await Project.countDocuments({ status: ProjectStatus.PENDING_APPROVAL });
+    const pendingWithdrawals = await adminService.getPendingWithdrawalsCount();
+    const pendingApprovals = pendingProjects + pendingWithdrawals;
+
+    // Get revenue stats
+    const analytics = await adminService.getAnalytics('all');
+    const totalRevenue = analytics.revenue?.total || 0;
+    const monthlyRevenue = analytics.revenue?.monthly || 0;
+
+    res.json({
+      totalUsers,
+      totalInfluencers,
+      totalBusinesses,
+      activeProjects,
+      pendingApprovals,
+      totalRevenue,
+      monthlyRevenue,
+      pendingWithdrawals,
+    });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -169,6 +209,75 @@ router.get('/audit-logs', async (req: AuthRequest, res: Response) => {
     });
 
     res.json({ logs, total });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Pending approvals (all types)
+router.get('/approvals/pending', async (req: AuthRequest, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    // Get pending projects
+    const pendingProjects = await Project.find({ status: ProjectStatus.PENDING_APPROVAL })
+      .populate('businessId', 'firstName lastName profile.companyName')
+      .sort({ createdAt: -1 })
+      .limit(limit / 2);
+
+    // Get pending withdrawals
+    const pending = await adminService.getPendingApprovals();
+
+    // Combine and format approvals
+    const approvals = [
+      ...pendingProjects.map((p: any) => ({
+        id: p._id,
+        type: 'project',
+        title: p.title,
+        requester: p.businessId?.profile?.companyName || `${p.businessId?.firstName} ${p.businessId?.lastName}`,
+        amount: p.budget,
+        createdAt: p.createdAt,
+      })),
+      ...pending.withdrawals.slice(0, limit / 2).map((w: any) => ({
+        id: w._id,
+        type: 'withdrawal',
+        title: `Withdrawal Request`,
+        requester: w.userId?.firstName ? `${w.userId.firstName} ${w.userId.lastName}` : 'Unknown',
+        amount: w.amount,
+        createdAt: w.createdAt,
+      })),
+    ];
+
+    // Sort by date and limit
+    approvals.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    res.json({ approvals: approvals.slice(0, limit) });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Recent activity
+router.get('/activity', async (req: AuthRequest, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    // Get recent audit logs as activities
+    const { logs } = await adminService.getAuditLogs({
+      page: 1,
+      limit,
+    });
+
+    // Format as activities
+    const activities = logs.map((log: any) => ({
+      id: log._id,
+      type: log.action,
+      description: `${log.action} ${log.entityType} - ${log.details || ''}`,
+      user: log.adminId?.firstName ? `${log.adminId.firstName} ${log.adminId.lastName}` : 'System',
+      timestamp: log.timestamp,
+    }));
+
+    res.json({ activities });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

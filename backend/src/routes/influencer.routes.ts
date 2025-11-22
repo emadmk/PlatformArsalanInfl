@@ -1,16 +1,60 @@
 import { Router, Response } from 'express';
 import { AuthRequest, authenticateToken, requireRole } from '@/middleware/auth.middleware';
 import { User } from '@/models/User.model';
+import { Project } from '@/models/Project.model';
+import { Task } from '@/models/Task.model';
 import projectService from '@/services/project/project.service';
 import taskService from '@/services/task/task.service';
 import walletService from '@/services/payment/wallet.service';
-import { UserRole } from '@shared/types';
+import transactionService from '@/services/payment/transaction.service';
+import { UserRole, ProjectStatus, TaskStatus } from '@shared/types';
 
 const router = Router();
 
 // All routes require influencer authentication
 router.use(authenticateToken);
 router.use(requireRole(UserRole.INFLUENCER));
+
+// Dashboard Stats
+router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.id;
+
+    // Count active projects (accepted influencer)
+    const activeProjects = await Project.countDocuments({
+      acceptedInfluencers: userId,
+      status: { $in: [ProjectStatus.ACTIVE, ProjectStatus.IN_PROGRESS] },
+    });
+
+    // Count completed tasks
+    const completedTasks = await Task.countDocuments({
+      influencerId: userId,
+      status: TaskStatus.COMPLETED,
+    });
+
+    // Get wallet balance and calculate totals
+    const balance = await walletService.getBalance(userId);
+    const transactions = await transactionService.getTransactions(userId);
+
+    const totalEarnings = transactions
+      .filter((t: any) => t.type === 'credit' && t.status === 'completed')
+      .reduce((sum: number, t: any) => sum + t.amount, 0);
+
+    const pendingPayments = transactions
+      .filter((t: any) => t.type === 'credit' && t.status === 'pending')
+      .reduce((sum: number, t: any) => sum + t.amount, 0);
+
+    res.json({
+      activeProjects,
+      completedTasks,
+      totalEarnings,
+      pendingPayments,
+      currentBalance: balance,
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Profile
 router.get('/profile', async (req: AuthRequest, res: Response) => {
@@ -32,6 +76,36 @@ router.put('/profile', async (req: AuthRequest, res: Response) => {
 });
 
 // Projects
+router.get('/projects', async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const skip = (page - 1) * limit;
+
+    // Get projects where influencer is applied or accepted
+    const query = {
+      $or: [
+        { appliedInfluencers: userId },
+        { acceptedInfluencers: userId },
+      ],
+    };
+
+    const [projects, total] = await Promise.all([
+      Project.find(query)
+        .populate('businessId', 'firstName lastName profile.companyName avatar')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Project.countDocuments(query),
+    ]);
+
+    res.json({ projects, total });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get('/projects/browse', async (req: AuthRequest, res: Response) => {
   try {
     const { projects, total } = await projectService.getProjects({

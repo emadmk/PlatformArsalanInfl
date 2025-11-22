@@ -59,17 +59,27 @@ export default function AdminDashboard() {
     try {
       // Fetch dashboard stats
       const { data: statsData } = await api.get('/admin/dashboard/stats');
-      setStats(statsData);
+      setStats({
+        totalUsers: statsData.totalUsers || 0,
+        totalInfluencers: statsData.totalInfluencers || 0,
+        totalBusinesses: statsData.totalBusinesses || 0,
+        activeProjects: statsData.activeProjects || 0,
+        pendingApprovals: statsData.pendingApprovals || 0,
+        totalRevenue: statsData.totalRevenue || 0,
+        monthlyRevenue: statsData.monthlyRevenue || 0,
+        pendingWithdrawals: statsData.pendingWithdrawals || 0,
+      });
 
       // Fetch pending approvals
       const { data: approvalsData } = await api.get('/admin/approvals/pending?limit=5');
-      setPendingApprovals(approvalsData.approvals);
+      setPendingApprovals(approvalsData.approvals || []);
 
       // Fetch recent activity
       const { data: activityData } = await api.get('/admin/activity?limit=10');
-      setRecentActivity(activityData.activities);
+      setRecentActivity(activityData.activities || []);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Keep default values on error
     } finally {
       setIsLoading(false);
     }

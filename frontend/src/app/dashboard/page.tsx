@@ -49,17 +49,23 @@ export default function InfluencerDashboard() {
     try {
       // Fetch dashboard stats
       const { data: statsData } = await api.get('/influencer/dashboard/stats');
-      setStats(statsData);
+      setStats({
+        activeProjects: statsData.activeProjects || 0,
+        completedTasks: statsData.completedTasks || 0,
+        totalEarnings: statsData.totalEarnings || 0,
+        pendingPayments: statsData.pendingPayments || 0,
+      });
 
       // Fetch recent projects
       const { data: projectsData } = await api.get('/influencer/projects?limit=5');
-      setRecentProjects(projectsData.projects);
+      setRecentProjects(projectsData.projects || []);
 
       // Fetch recent tasks
-      const { data: tasksData } = await api.get('/tasks?limit=5');
-      setRecentTasks(tasksData.tasks);
+      const { data: tasksData } = await api.get('/influencer/tasks?limit=5');
+      setRecentTasks(tasksData.tasks || []);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Keep default values on error
     } finally {
       setIsLoading(false);
     }
