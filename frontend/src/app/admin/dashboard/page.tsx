@@ -86,7 +86,7 @@ export default function AdminDashboard() {
   };
 
   const getApprovalTypeBadge = (type: string) => {
-    const variants: Record<string, any> = {
+    const variants: Record<string, 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'gray'> = {
       project: 'primary',
       withdrawal: 'warning',
       user: 'info',

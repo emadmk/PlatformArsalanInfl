@@ -2,7 +2,6 @@ import { Router, Response } from 'express';
 import { AuthRequest, authenticateToken, requireRole, requireAdminRole } from '@/middleware/auth.middleware';
 import adminService from '@/services/admin/admin.service';
 import projectService from '@/services/project/project.service';
-import analyticsService from '@/services/analytics/analytics.service';
 import { User } from '@/models/User.model';
 import { Project } from '@/models/Project.model';
 import { UserRole, AdminRole, ProjectStatus } from '@shared/types';
@@ -40,10 +39,10 @@ router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
     const pendingWithdrawals = await adminService.getPendingWithdrawalsCount();
     const pendingApprovals = pendingProjects + pendingWithdrawals;
 
-    // Get revenue stats
-    const analytics = await adminService.getAnalytics('all');
-    const totalRevenue = analytics.revenue?.total || 0;
-    const monthlyRevenue = analytics.revenue?.monthly || 0;
+    // Get revenue stats from dashboard stats
+    const dashboardData = await adminService.getDashboardStats();
+    const totalRevenue = dashboardData.revenue?.actual || 0;
+    const monthlyRevenue = totalRevenue; // Same value for now
 
     res.json({
       totalUsers,

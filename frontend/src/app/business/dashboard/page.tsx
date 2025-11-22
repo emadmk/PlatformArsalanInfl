@@ -74,7 +74,7 @@ export default function BusinessDashboard() {
   };
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, any> = {
+    const variants: Record<string, 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'gray'> = {
       active: 'success',
       draft: 'gray',
       completed: 'info',

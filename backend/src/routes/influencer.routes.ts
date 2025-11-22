@@ -34,7 +34,7 @@ router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
 
     // Get wallet balance and calculate totals
     const balance = await walletService.getBalance(userId);
-    const transactions = await transactionService.getTransactions(userId);
+    const { transactions } = await transactionService.getTransactions(userId);
 
     const totalEarnings = transactions
       .filter((t: any) => t.type === 'credit' && t.status === 'completed')
@@ -122,11 +122,20 @@ router.get('/projects/browse', async (req: AuthRequest, res: Response) => {
 
 router.get('/projects/applied', async (req: AuthRequest, res: Response) => {
   try {
-    const { projects, total } = await projectService.getProjects({
-      appliedInfluencers: req.user!.id,
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 20,
-    });
+    const userId = req.user!.id;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const skip = (page - 1) * limit;
+
+    // Query for projects where influencer has applied
+    const [projects, total] = await Promise.all([
+      Project.find({ appliedInfluencers: userId })
+        .populate('businessId', 'firstName lastName profile.companyName avatar')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Project.countDocuments({ appliedInfluencers: userId }),
+    ]);
 
     res.json({ projects, total });
   } catch (error: any) {

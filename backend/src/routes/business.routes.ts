@@ -40,7 +40,7 @@ router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
     });
 
     // Calculate total spent
-    const transactions = await transactionService.getTransactions(userId);
+    const { transactions } = await transactionService.getTransactions(userId);
     const totalSpent = transactions
       .filter((t: any) => t.type === 'debit' && t.status === 'completed')
       .reduce((sum: number, t: any) => sum + t.amount, 0);
