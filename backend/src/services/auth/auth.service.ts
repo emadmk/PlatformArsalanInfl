@@ -4,7 +4,7 @@ import QRCode from 'qrcode';
 import { User, IUser } from '@/models/User.model';
 import config from '@/config';
 import { AppError } from '@/middleware/error.middleware';
-import { UserRole } from '@shared/types';
+import { UserRole } from 'shared';
 
 export class AuthService {
   async register(userData: {
@@ -194,8 +194,8 @@ export class AuthService {
         role: user.role,
         adminRole: user.adminRole,
       },
-      config.jwt.secret,
-      { expiresIn: config.jwt.expiresIn }
+      config.jwt.secret as jwt.Secret,
+      { expiresIn: config.jwt.expiresIn } as jwt.SignOptions
     );
   }
 
@@ -205,8 +205,8 @@ export class AuthService {
         id: user._id,
         email: user.email,
       },
-      config.jwt.refreshSecret,
-      { expiresIn: config.jwt.refreshExpiresIn }
+      config.jwt.refreshSecret as jwt.Secret,
+      { expiresIn: config.jwt.refreshExpiresIn } as jwt.SignOptions
     );
   }
 }

@@ -6,7 +6,7 @@ export enum ContentStatus {
   ARCHIVED = 'archived',
 }
 
-export enum ContentType {
+export enum CMSContentType {
   PAGE = 'page',
   SECTION = 'section',
   BANNER = 'banner',
@@ -18,7 +18,7 @@ export enum ContentType {
 // CMS Content Schema
 export const CMSContentSchema = z.object({
   id: z.string(),
-  type: z.nativeEnum(ContentType),
+  type: z.nativeEnum(CMSContentType),
   slug: z.string(),
   title: z.record(z.string()), // { en: 'Title', fa: 'عنوان', ... }
   content: z.record(z.string()), // { en: 'Content', fa: 'محتوا', ... }

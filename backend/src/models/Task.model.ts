@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { TaskStatus, TaskPriority } from '@shared/types';
+import { TaskStatus, TaskPriority } from 'shared';
 
 export interface ITask extends Document {
   projectId: mongoose.Types.ObjectId;

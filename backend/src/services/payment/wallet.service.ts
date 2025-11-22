@@ -1,7 +1,7 @@
 import { AppDataSource } from '@/config/database';
 import { AppError } from '@/middleware/error.middleware';
 import { User } from '@/models/User.model';
-import { Blockchain, TransactionType, TransactionStatus } from '@shared/types';
+import { Blockchain, TransactionType, TransactionStatus } from 'shared';
 import transactionService from './transaction.service';
 
 export class WalletService {

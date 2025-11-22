@@ -6,7 +6,7 @@ import transactionService from '@/services/payment/transaction.service';
 import { User } from '@/models/User.model';
 import { Project } from '@/models/Project.model';
 import { Task } from '@/models/Task.model';
-import { UserRole, ProjectStatus, TaskStatus } from '@shared/types';
+import { UserRole, ProjectStatus, TaskStatus } from 'shared';
 
 const router = Router();
 

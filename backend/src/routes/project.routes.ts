@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { AuthRequest, authenticateToken, requireRole } from '@/middleware/auth.middleware';
 import projectService from '@/services/project/project.service';
-import { UserRole } from '@shared/types';
+import { UserRole, ProjectStatus } from 'shared';
 
 const router = Router();
 
@@ -9,7 +9,7 @@ const router = Router();
 router.get('/', async (req: AuthRequest, res: Response) => {
   try {
     const { projects, total } = await projectService.getProjects({
-      status: 'approved',
+      status: ProjectStatus.APPROVED,
       page: parseInt(req.query.page as string) || 1,
       limit: parseInt(req.query.limit as string) || 20,
       category: req.query.category as string,

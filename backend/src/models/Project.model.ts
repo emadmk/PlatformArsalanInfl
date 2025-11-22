@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { ProjectStatus } from '@shared/types';
+import { ProjectStatus } from 'shared';
 
 export interface IProject extends Document {
   businessId: mongoose.Types.ObjectId;

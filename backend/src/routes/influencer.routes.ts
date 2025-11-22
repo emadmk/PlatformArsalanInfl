@@ -7,7 +7,7 @@ import projectService from '@/services/project/project.service';
 import taskService from '@/services/task/task.service';
 import walletService from '@/services/payment/wallet.service';
 import transactionService from '@/services/payment/transaction.service';
-import { UserRole, ProjectStatus, TaskStatus } from '@shared/types';
+import { UserRole, ProjectStatus, TaskStatus } from 'shared';
 
 const router = Router();
 
@@ -109,7 +109,7 @@ router.get('/projects', async (req: AuthRequest, res: Response) => {
 router.get('/projects/browse', async (req: AuthRequest, res: Response) => {
   try {
     const { projects, total } = await projectService.getProjects({
-      status: 'approved',
+      status: ProjectStatus.APPROVED,
       page: parseInt(req.query.page as string) || 1,
       limit: parseInt(req.query.limit as string) || 20,
     });

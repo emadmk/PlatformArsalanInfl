@@ -2,7 +2,7 @@ import { Task, ITask } from '@/models/Task.model';
 import { Project } from '@/models/Project.model';
 import { User } from '@/models/User.model';
 import { AppError } from '@/middleware/error.middleware';
-import { TaskStatus, ProjectStatus } from '@shared/types';
+import { TaskStatus, ProjectStatus } from 'shared';
 import walletService from '../payment/wallet.service';
 import config from '@/config';
 

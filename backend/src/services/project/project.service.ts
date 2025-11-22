@@ -1,7 +1,7 @@
 import { Project, IProject } from '@/models/Project.model';
 import { User } from '@/models/User.model';
 import { AppError } from '@/middleware/error.middleware';
-import { ProjectStatus } from '@shared/types';
+import { ProjectStatus } from 'shared';
 import mongoose from 'mongoose';
 import { getElasticsearchClient } from '@/config/database';
 

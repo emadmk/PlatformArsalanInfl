@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import config from '@/config';
 import { AppError } from '@/middleware/error.middleware';
-import { Blockchain } from '@shared/types';
+import { Blockchain } from 'shared';
 
 const USDT_ABI = [
   'function transfer(address to, uint amount) returns (bool)',

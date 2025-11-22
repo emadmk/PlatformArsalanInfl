@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { ContentStatus, ContentType } from '@shared/types';
+import { ContentStatus, CMSContentType } from 'shared';
 
 export interface ICMSContent extends Document {
-  type: ContentType;
+  type: CMSContentType;
   slug: string;
   title: Record<string, string>;
   content: Record<string, string>;
@@ -64,7 +64,7 @@ const CMSContentSchema = new Schema<ICMSContent>(
   {
     type: {
       type: String,
-      enum: Object.values(ContentType),
+      enum: Object.values(CMSContentType),
       required: true,
     },
     slug: {

@@ -3,7 +3,7 @@ import { Project } from '@/models/Project.model';
 import { Task } from '@/models/Task.model';
 import { AppDataSource } from '@/config/database';
 import { AppError } from '@/middleware/error.middleware';
-import { ProjectStatus, TaskStatus } from '@shared/types';
+import { ProjectStatus, TaskStatus } from 'shared';
 
 export class AdminService {
   async getDashboardStats(): Promise<any> {

@@ -1,6 +1,6 @@
 import { Notification, INotification } from '@/models/Notification.model';
 import { User } from '@/models/User.model';
-import { NotificationType } from '@shared/types';
+import { NotificationType } from 'shared';
 import * as OneSignal from 'onesignal-node';
 import nodemailer from 'nodemailer';
 import config from '@/config';

@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { AuthRequest, authenticateToken, requireRole } from '@/middleware/auth.middleware';
 import cmsService from '@/services/cms/cms.service';
-import { UserRole } from '@shared/types';
+import { UserRole } from 'shared';
 
 const router = Router();
 

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '@/middleware/auth.middleware';
 import authService from '@/services/auth/auth.service';
 import { User } from '@/models/User.model';
-import { UserRole } from '@shared/types';
+import { UserRole } from 'shared';
 
 export class AuthController {
   async registerInfluencer(req: AuthRequest, res: Response): Promise<void> {

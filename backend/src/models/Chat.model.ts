@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { ChatType, MessageType } from '@shared/types';
+import { ChatType, MessageType } from 'shared';
 
 export interface IMessage extends Document {
   chatId: mongoose.Types.ObjectId;

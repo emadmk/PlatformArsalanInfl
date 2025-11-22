@@ -1,6 +1,6 @@
 import { Chat, Message, IChat, IMessage } from '@/models/Chat.model';
 import { AppError } from '@/middleware/error.middleware';
-import { ChatType } from '@shared/types';
+import { ChatType } from 'shared';
 import mongoose from 'mongoose';
 
 export class ChatService {

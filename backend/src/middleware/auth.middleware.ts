@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '@/config';
 import { User } from '@/models/User.model';
-import { UserRole, AdminRole } from '@shared/types';
+import { UserRole, AdminRole } from 'shared';
 
 export interface AuthRequest extends Request {
   user?: {

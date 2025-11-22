@@ -4,7 +4,7 @@ import adminService from '@/services/admin/admin.service';
 import projectService from '@/services/project/project.service';
 import { User } from '@/models/User.model';
 import { Project } from '@/models/Project.model';
-import { UserRole, AdminRole, ProjectStatus } from '@shared/types';
+import { UserRole, AdminRole, ProjectStatus } from 'shared';
 
 const router = Router();
 
@@ -117,7 +117,7 @@ router.post('/users/:id/verify', async (req: AuthRequest, res: Response) => {
 router.get('/projects/pending', async (req: AuthRequest, res: Response) => {
   try {
     const { projects } = await projectService.getProjects({
-      status: 'pending_approval',
+      status: ProjectStatus.PENDING_APPROVAL,
       page: parseInt(req.query.page as string) || 1,
       limit: parseInt(req.query.limit as string) || 20,
     });

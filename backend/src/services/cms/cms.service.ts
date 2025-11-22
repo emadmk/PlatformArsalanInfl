@@ -1,6 +1,6 @@
 import { CMSContent, PlatformSettings, ICMSContent } from '@/models/CMS.model';
 import { AppError } from '@/middleware/error.middleware';
-import { ContentType, ContentStatus } from '@shared/types';
+import { CMSContentType, ContentStatus } from 'shared';
 
 export class CMSService {
   async createContent(data: Partial<ICMSContent>, createdBy: string): Promise<ICMSContent> {
@@ -15,7 +15,7 @@ export class CMSService {
   }
 
   async getContent(filters: {
-    type?: ContentType;
+    type?: CMSContentType;
     status?: ContentStatus;
     slug?: string;
   } = {}): Promise<ICMSContent[]> {
@@ -50,9 +50,9 @@ export class CMSService {
       id: content._id,
       type: content.type,
       slug: content.slug,
-      title: content.title.get(language) || content.title.get('en'),
-      content: content.content.get(language) || content.content.get('en'),
-      excerpt: content.excerpt?.get(language) || content.excerpt?.get('en'),
+      title: content.title[language] || content.title['en'],
+      content: content.content[language] || content.content['en'],
+      excerpt: content.excerpt?.[language] || content.excerpt?.['en'],
       images: content.images,
       metadata: content.metadata,
       seo: content.seo,
@@ -170,7 +170,7 @@ export class CMSService {
 
   async getLandingPageContent(language: string = 'en'): Promise<any> {
     const sections = await CMSContent.find({
-      type: { $in: [ContentType.SECTION, ContentType.BANNER, ContentType.TESTIMONIAL] },
+      type: { $in: [CMSContentType.SECTION, CMSContentType.BANNER, CMSContentType.TESTIMONIAL] },
       status: ContentStatus.PUBLISHED,
       isActive: true,
     }).sort({ order: 1 });
@@ -178,8 +178,8 @@ export class CMSService {
     return sections.map((section) => ({
       id: section._id,
       type: section.type,
-      title: section.title.get(language) || section.title.get('en'),
-      content: section.content.get(language) || section.content.get('en'),
+      title: section.title[language] || section.title['en'],
+      content: section.content[language] || section.content['en'],
       images: section.images,
       metadata: section.metadata,
     }));

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { UserRole, AdminRole } from '@shared/types';
+import { UserRole, AdminRole } from 'shared';
 
 export interface IUser extends Document {
   email: string;
@@ -207,7 +207,7 @@ UserSchema.methods.comparePassword = async function (
 
 // Remove password from JSON output
 UserSchema.set('toJSON', {
-  transform: (doc, ret) => {
+  transform: (doc, ret: any) => {
     delete ret.password;
     delete ret.twoFactorSecret;
     delete ret.emailVerificationToken;
