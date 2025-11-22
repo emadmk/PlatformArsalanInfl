@@ -104,8 +104,8 @@ print_success "PostgreSQL نصب و تنظیم شد"
 print_header "مرحله 6/12: نصب Redis"
 apt install -y redis-server
 sed -i 's/supervised no/supervised systemd/' /etc/redis/redis.conf
-systemctl restart redis
-systemctl enable redis
+systemctl restart redis-server || systemctl start redis-server
+systemctl enable redis-server || true
 print_success "Redis نصب و راه‌اندازی شد"
 
 print_header "مرحله 7/12: نصب Elasticsearch"
