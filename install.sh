@@ -127,7 +127,7 @@ print_success "Nginx نصب و راه‌اندازی شد"
 
 print_header "مرحله 9/12: نصب PM2"
 npm install -g pm2
-pm2 startup systemd -u $(logname) --hp /home/$(logname)
+pm2 startup systemd -u root --hp /root
 print_success "PM2 نصب شد"
 
 print_header "مرحله 10/12: کلون و نصب پروژه"
@@ -139,16 +139,32 @@ if [ -d "$PROJECT_DIR" ]; then
 fi
 
 mkdir -p /var/www
-cd /var/www
 
-# کلون از گیت (باید URL را تغییر دهید)
-print_info "در حال کلون کردن پروژه..."
-# git clone https://github.com/your-username/PlatformArsalanInfl.git
-# موقتاً از کپی محلی استفاده می‌کنیم
-cp -r /home/user/PlatformArsalanInfl /var/www/ 2>/dev/null || print_warning "کپی محلی انجام نشد"
+# کلون از گیت یا کپی از مسیر فعلی
+print_info "در حال کپی کردن پروژه..."
+CURRENT_DIR=$(pwd)
+
+# چک کردن که آیا در پوشه پروژه هستیم
+if [ -f "$CURRENT_DIR/package.json" ] && [ -d "$CURRENT_DIR/backend" ] && [ -d "$CURRENT_DIR/frontend" ]; then
+    print_info "کپی از مسیر فعلی: $CURRENT_DIR"
+    cp -r "$CURRENT_DIR" "$PROJECT_DIR"
+else
+    # تلاش برای پیدا کردن در مسیرهای مختلف
+    if [ -d "/root/arsalan/PlatformArsalanInfl" ]; then
+        print_info "کپی از /root/arsalan/PlatformArsalanInfl"
+        cp -r /root/arsalan/PlatformArsalanInfl "$PROJECT_DIR"
+    elif [ -d "/home/user/PlatformArsalanInfl" ]; then
+        print_info "کپی از /home/user/PlatformArsalanInfl"
+        cp -r /home/user/PlatformArsalanInfl "$PROJECT_DIR"
+    else
+        # کلون از GitHub
+        print_info "کلون از GitHub..."
+        git clone https://github.com/emadmk/PlatformArsalanInfl.git "$PROJECT_DIR"
+    fi
+fi
 
 cd "$PROJECT_DIR"
-chown -R $(logname):$(logname) "$PROJECT_DIR"
+chown -R root:root "$PROJECT_DIR"
 
 print_header "مرحله 11/12: تنظیم محیط و بیلد"
 
@@ -197,26 +213,26 @@ print_success "فایل .env ایجاد شد"
 
 # نصب dependencies
 print_info "نصب dependencies (ممکن است چند دقیقه طول بکشد)..."
-su - $(logname) -c "cd $PROJECT_DIR && npm install"
+cd $PROJECT_DIR && npm install
 
 # بیلد shared
 print_info "بیلد shared package..."
-su - $(logname) -c "cd $PROJECT_DIR/shared && npm run build"
+cd $PROJECT_DIR/shared && npm run build
 
 # بیلد backend
 print_info "بیلد backend..."
-su - $(logname) -c "cd $PROJECT_DIR/backend && npm run build"
+cd $PROJECT_DIR/backend && npm run build
 
-# بیلد frontend (ممکن است به دلیل عدم دسترسی به Google Fonts خطا دهد)
+# بیلد frontend
 print_info "بیلد frontend..."
-su - $(logname) -c "cd $PROJECT_DIR/frontend && npm run build" || print_warning "Frontend build با خطا مواجه شد (معمولاً به دلیل Google Fonts)"
+cd $PROJECT_DIR/frontend && npm run build || print_warning "Frontend build با خطا مواجه شد"
 
 print_success "پروژه بیلد شد"
 
 # راه‌اندازی با PM2
 print_info "راه‌اندازی با PM2..."
-su - $(logname) -c "cd $PROJECT_DIR && pm2 start ecosystem.config.js"
-su - $(logname) -c "pm2 save"
+cd $PROJECT_DIR && pm2 start ecosystem.config.js
+pm2 save
 
 print_success "پروژه با PM2 راه‌اندازی شد"
 
