@@ -5,6 +5,21 @@ import { User } from '@/models/User.model';
 import { UserRole } from 'shared';
 
 export class AuthController {
+  async register(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const user = await authService.register(req.body);
+
+      res.status(201).json({
+        message: 'User registered successfully',
+        user,
+      });
+    } catch (error: any) {
+      res.status(error.statusCode || 500).json({
+        error: error.message,
+      });
+    }
+  }
+
   async registerInfluencer(req: AuthRequest, res: Response): Promise<void> {
     try {
       const user = await authService.register({

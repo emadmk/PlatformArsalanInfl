@@ -7,6 +7,7 @@ const router = Router();
 const authController = new AuthController();
 
 // Public routes
+router.post('/register', authLimiter, authController.register);
 router.post('/register/influencer', authLimiter, authController.registerInfluencer);
 router.post('/register/business', authLimiter, authController.registerBusiness);
 router.post('/login', authLimiter, authController.login);
