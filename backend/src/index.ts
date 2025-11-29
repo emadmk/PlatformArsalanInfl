@@ -15,6 +15,9 @@ import setupSocketHandlers from './socket/handlers';
 const app: Application = express();
 const httpServer = createServer(app);
 
+// Trust proxy - required when running behind Nginx
+app.set('trust proxy', true);
+
 // Socket.IO setup
 const io = new SocketIOServer(httpServer, {
   cors: config.cors,
