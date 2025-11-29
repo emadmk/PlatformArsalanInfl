@@ -7,7 +7,18 @@ import { UserRole } from 'shared';
 export class AuthController {
   async register(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const user = await authService.register(req.body);
+      const { fullName, ...rest } = req.body;
+
+      // Split fullName into firstName and lastName
+      const nameParts = fullName?.trim().split(/\s+/) || [];
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+
+      const user = await authService.register({
+        ...rest,
+        firstName,
+        lastName,
+      });
 
       res.status(201).json({
         message: 'User registered successfully',
