@@ -16,7 +16,8 @@ const app: Application = express();
 const httpServer = createServer(app);
 
 // Trust proxy - required when running behind Nginx
-app.set('trust proxy', true);
+// Trust only the first proxy (Nginx on localhost)
+app.set('trust proxy', 1);
 
 // Socket.IO setup
 const io = new SocketIOServer(httpServer, {
