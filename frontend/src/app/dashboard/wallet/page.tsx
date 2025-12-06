@@ -5,6 +5,7 @@ import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { Badge } from '@/components/shared/Badge';
 import { Input } from '@/components/shared/Input';
+import { DashboardNavbar } from '@/components/shared/DashboardNavbar';
 import api from '@/lib/api';
 import {
   Wallet,
@@ -170,16 +171,18 @@ export default function WalletPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <DashboardNavbar />
+
       {/* Header */}
       <div className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center mb-6">
-            <Wallet className="w-8 h-8 mr-3" />
-            <h1 className="text-3xl font-bold">My Wallet</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center">
+            <Wallet className="w-7 h-7 mr-3" />
+            <h1 className="text-2xl font-bold">My Wallet</h1>
           </div>
 
           {/* Balance Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">

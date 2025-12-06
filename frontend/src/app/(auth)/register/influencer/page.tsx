@@ -263,7 +263,7 @@ export default function InfluencerRegisterPage() {
                       value={formData.bio}
                       onChange={(e) => updateFormData('bio', e.target.value)}
                       rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white text-gray-900 placeholder-gray-400"
                       placeholder="Tell us about yourself and your content..."
                     />
                     <p className="mt-1 text-xs text-gray-500">

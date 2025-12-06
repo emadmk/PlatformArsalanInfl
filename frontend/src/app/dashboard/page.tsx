@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { Badge } from '@/components/shared/Badge';
+import { DashboardNavbar } from '@/components/shared/DashboardNavbar';
 import api from '@/lib/api';
 
 interface DashboardStats {
@@ -100,22 +101,7 @@ export default function InfluencerDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Influencer Dashboard</h1>
-            <div className="flex gap-3">
-              <Link href="/dashboard/projects">
-                <Button variant="outline">Browse Projects</Button>
-              </Link>
-              <Link href="/dashboard/safira">
-                <Button>Safira Program</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardNavbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Safira Banner */}

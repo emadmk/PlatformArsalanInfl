@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { Badge } from '@/components/shared/Badge';
+import { DashboardNavbar } from '@/components/shared/DashboardNavbar';
 import api from '@/lib/api';
 
 interface SafiraSlot {
@@ -165,24 +165,15 @@ export default function SafiraDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+      <DashboardNavbar />
+
+      {/* Page Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold">Safira Luxury Program</h1>
-              <p className="text-purple-100 mt-1">Earn $40 for every successful referral</p>
-            </div>
-            <div className="flex gap-3">
-              <Link href="/dashboard">
-                <Button variant="outline" className="border-white text-white hover:bg-white/10">
-                  Back to Dashboard
-                </Button>
-              </Link>
-            </div>
-          </div>
+          <h1 className="text-2xl font-bold">Safira Luxury Program</h1>
+          <p className="text-purple-100 mt-1">Earn $40 for every successful referral</p>
         </div>
-      </header>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Referral Link Section */}

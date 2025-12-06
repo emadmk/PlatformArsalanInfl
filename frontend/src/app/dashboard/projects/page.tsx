@@ -6,6 +6,7 @@ import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { Badge } from '@/components/shared/Badge';
 import { Input } from '@/components/shared/Input';
+import { DashboardNavbar } from '@/components/shared/DashboardNavbar';
 import api from '@/lib/api';
 import { Search, MapPin, DollarSign, Calendar, Users, Filter } from 'lucide-react';
 
@@ -120,13 +121,15 @@ export default function BrowseProjectsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <DashboardNavbar />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Browse Projects</h1>
-              <p className="mt-2 text-sm text-gray-600">
+              <h1 className="text-2xl font-bold text-gray-900">Browse Projects</h1>
+              <p className="mt-1 text-sm text-gray-600">
                 Find exciting collaboration opportunities with brands
               </p>
             </div>
