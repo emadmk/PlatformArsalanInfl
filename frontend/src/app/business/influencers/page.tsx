@@ -91,25 +91,22 @@ export default function FindInfluencersPage() {
         limit: 12,
       };
 
+      // Send category as simple string
       if (selectedCategory !== 'all') {
-        filters['profile.categories'] = selectedCategory;
+        filters.category = selectedCategory;
       }
 
+      // Send follower filters as simple values
       if (minFollowers) {
-        filters['profile.socialMedia.totalFollowers'] = { $gte: parseInt(minFollowers) };
+        filters.minFollowers = minFollowers;
       }
 
       if (maxFollowers) {
-        if (!filters['profile.socialMedia.totalFollowers']) {
-          filters['profile.socialMedia.totalFollowers'] = {};
-        }
-        filters['profile.socialMedia.totalFollowers'].$lte = parseInt(maxFollowers);
+        filters.maxFollowers = maxFollowers;
       }
 
       if (minEngagement) {
-        filters['profile.socialMedia.averageEngagement'] = {
-          $gte: parseFloat(minEngagement),
-        };
+        filters.minEngagement = minEngagement;
       }
 
       const { data } = await api.post('/business/influencers/search', filters);
