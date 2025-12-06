@@ -98,12 +98,12 @@ class SafiraService {
     }
 
     // Check if already has Safira stats
-    let stats = await SafiraInfluencerStats.findOne({ influencerId: userId });
-    if (stats) {
+    const existingStats = await SafiraInfluencerStats.findOne({ influencerId: userId });
+    if (existingStats) {
       return {
-        referralCode: stats.referralCode,
-        referralUrl: stats.referralUrl,
-        stats,
+        referralCode: existingStats.referralCode,
+        referralUrl: existingStats.referralUrl,
+        stats: existingStats as ISafiraInfluencerStats,
       };
     }
 
@@ -111,7 +111,7 @@ class SafiraService {
     const project = await this.getSafiraProject();
 
     // Generate unique referral code
-    let referralCode: string;
+    let referralCode: string = '';
     let isUnique = false;
     let attempts = 0;
 
@@ -130,7 +130,7 @@ class SafiraService {
 
     // Update user profile with referral code
     await User.findByIdAndUpdate(userId, {
-      'profile.safiraReferralCode': referralCode!,
+      'profile.safiraReferralCode': referralCode,
     });
 
     // Add influencer to project's accepted list
@@ -139,16 +139,16 @@ class SafiraService {
     });
 
     // Initialize stats
-    stats = await this.initializeInfluencerStats(
+    const newStats = await this.initializeInfluencerStats(
       new mongoose.Types.ObjectId(userId),
-      referralCode!,
+      referralCode,
       project._id
     );
 
     return {
-      referralCode: referralCode!,
-      referralUrl: stats.referralUrl,
-      stats,
+      referralCode: referralCode,
+      referralUrl: newStats.referralUrl,
+      stats: newStats as ISafiraInfluencerStats,
     };
   }
 
