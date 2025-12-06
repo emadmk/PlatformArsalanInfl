@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Ca
 import { Button } from '@/components/shared/Button';
 import { Badge } from '@/components/shared/Badge';
 import api from '@/lib/api';
+import { BusinessNavbar } from '@/components/shared/BusinessNavbar';
 
 interface DashboardStats {
   activeCampaigns: number;
@@ -95,22 +96,7 @@ export default function BusinessDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Business Dashboard</h1>
-            <div className="flex gap-3">
-              <Link href="/business/influencers">
-                <Button variant="outline">Find Influencers</Button>
-              </Link>
-              <Link href="/business/projects/new">
-                <Button variant="secondary">Create Campaign</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <BusinessNavbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Grid */}

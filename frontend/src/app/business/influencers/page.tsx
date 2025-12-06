@@ -18,6 +18,7 @@ import {
   Twitter,
   MessageCircle,
 } from 'lucide-react';
+import { BusinessNavbar } from '@/components/shared/BusinessNavbar';
 
 interface Influencer {
   _id: string;
@@ -150,6 +151,8 @@ export default function FindInfluencersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <BusinessNavbar />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
