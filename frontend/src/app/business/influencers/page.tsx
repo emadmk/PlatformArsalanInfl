@@ -81,7 +81,7 @@ export default function FindInfluencersPage() {
 
   useEffect(() => {
     searchInfluencers();
-  }, [page]);
+  }, [page, selectedCategory, minFollowers, maxFollowers, minEngagement]);
 
   const searchInfluencers = async () => {
     try {
@@ -122,7 +122,7 @@ export default function FindInfluencersPage() {
 
   const handleSearch = () => {
     setPage(1);
-    searchInfluencers();
+    // useEffect will trigger the search
   };
 
   const filteredInfluencers = influencers.filter(
@@ -262,7 +262,6 @@ export default function FindInfluencersPage() {
                 onClick={() => {
                   setSelectedCategory(cat);
                   setPage(1);
-                  searchInfluencers();
                 }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   selectedCategory === cat

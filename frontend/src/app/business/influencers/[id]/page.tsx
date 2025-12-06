@@ -61,8 +61,8 @@ export default function InfluencerProfilePage() {
   const fetchInfluencer = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get(`/influencer/${params.id}/profile`);
-      setInfluencer(data.user || data.influencer);
+      const { data } = await api.get(`/business/influencers/${params.id}`);
+      setInfluencer(data.influencer);
     } catch (error) {
       console.error('Error fetching influencer:', error);
     } finally {

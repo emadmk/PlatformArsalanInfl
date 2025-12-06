@@ -267,4 +267,23 @@ router.post('/influencers/search', async (req: AuthRequest, res: Response) => {
   }
 });
 
+// Get individual influencer profile (for businesses to view)
+router.get('/influencers/:id', async (req: AuthRequest, res: Response) => {
+  try {
+    const influencer = await User.findOne({
+      _id: req.params.id,
+      role: 'influencer',
+    }).select('-password -twoFactorSecret');
+
+    if (!influencer) {
+      res.status(404).json({ error: 'Influencer not found' });
+      return;
+    }
+
+    res.json({ influencer });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
