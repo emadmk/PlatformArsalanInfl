@@ -509,7 +509,7 @@ export default function SafiraDashboard() {
                 <Button
                   className="flex-1"
                   onClick={handleWithdraw}
-                  loading={withdrawLoading}
+                  isLoading={withdrawLoading}
                   disabled={!withdrawAmount || parseFloat(withdrawAmount) <= 0 || parseFloat(withdrawAmount) > data.earnings.availableBalance}
                 >
                   Submit Request
