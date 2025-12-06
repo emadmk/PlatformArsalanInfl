@@ -2,7 +2,6 @@ import { Router, Response } from 'express';
 import { AuthRequest, authenticateToken, requireRole } from '@/middleware/auth.middleware';
 import projectService from '@/services/project/project.service';
 import taskService from '@/services/task/task.service';
-import transactionService from '@/services/payment/transaction.service';
 import { User } from '@/models/User.model';
 import { Project } from '@/models/Project.model';
 import { Task } from '@/models/Task.model';
@@ -39,11 +38,13 @@ router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
       status: ProjectStatus.COMPLETED,
     });
 
-    // Calculate total spent
-    const { transactions } = await transactionService.getTransactions(userId);
-    const totalSpent = transactions
-      .filter((t: any) => t.type === 'debit' && t.status === 'completed')
-      .reduce((sum: number, t: any) => sum + t.amount, 0);
+    // Calculate total spent from project budgets (simplified)
+    const allProjects = await Project.find({
+      businessId: userId,
+      status: { $in: [ProjectStatus.COMPLETED, ProjectStatus.IN_PROGRESS] },
+    }).select('budget');
+
+    const totalSpent = allProjects.reduce((sum: number, p: any) => sum + (p.budget || 0), 0);
 
     res.json({
       activeCampaigns,
@@ -226,22 +227,39 @@ router.get('/influencers', async (req: AuthRequest, res: Response) => {
 // Search Influencers
 router.post('/influencers/search', async (req: AuthRequest, res: Response) => {
   try {
-    const { page = 1, limit = 20, ...filters } = req.body;
+    const { page = 1, limit = 20, category, minFollowers, maxFollowers, minEngagement } = req.body;
 
-    const users = await User.find({
-      role: 'influencer',
-      'profile.verified': true,
-      ...filters,
-    })
+    // Build query for influencers
+    const query: any = { role: 'influencer' };
+
+    // Filter by category if provided
+    if (category && category !== 'all') {
+      query['profile.categories'] = category;
+    }
+
+    // Filter by followers
+    if (minFollowers) {
+      query['profile.socialMedia.totalFollowers'] = { $gte: parseInt(minFollowers) };
+    }
+    if (maxFollowers) {
+      if (!query['profile.socialMedia.totalFollowers']) {
+        query['profile.socialMedia.totalFollowers'] = {};
+      }
+      query['profile.socialMedia.totalFollowers'].$lte = parseInt(maxFollowers);
+    }
+
+    // Filter by engagement
+    if (minEngagement) {
+      query['profile.socialMedia.averageEngagement'] = { $gte: parseFloat(minEngagement) };
+    }
+
+    const users = await User.find(query)
       .select('-password -twoFactorSecret')
       .limit(limit)
-      .skip((page - 1) * limit);
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
 
-    const total = await User.countDocuments({
-      role: 'influencer',
-      'profile.verified': true,
-      ...filters,
-    });
+    const total = await User.countDocuments(query);
 
     res.json({ influencers: users, total });
   } catch (error: any) {

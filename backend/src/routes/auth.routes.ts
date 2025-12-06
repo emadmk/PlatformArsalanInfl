@@ -13,6 +13,8 @@ router.post('/register/business', authLimiter, authController.registerBusiness);
 router.post('/login', authLimiter, authController.login);
 router.post('/refresh', authController.refreshToken);
 router.post('/verify-2fa', authLimiter, authController.verifyTwoFactor);
+router.post('/forgot-password', authLimiter, authController.forgotPassword);
+router.post('/reset-password', authLimiter, authController.resetPassword);
 
 // Protected routes
 router.post('/setup-2fa', authenticateToken, authController.setupTwoFactor);

@@ -201,4 +201,48 @@ export class AuthController {
       message: 'Logout successful',
     });
   }
+
+  async forgotPassword(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+
+      // Find user by email (but don't reveal if they exist)
+      const user = await User.findOne({ email: email.toLowerCase() });
+
+      // Always return success (security best practice to prevent email enumeration)
+      // In production, implement actual email sending here
+
+      if (user) {
+        // TODO: Generate reset token, save to user, send email
+        // For now, just log it
+        console.log(`Password reset requested for: ${email}`);
+      }
+
+      res.json({
+        message: 'If an account exists with this email, a password reset link has been sent.',
+      });
+    } catch (error: any) {
+      // Even on error, return success message
+      res.json({
+        message: 'If an account exists with this email, a password reset link has been sent.',
+      });
+    }
+  }
+
+  async resetPassword(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { token, password } = req.body;
+
+      // TODO: Implement actual token verification and password reset
+      // For now, return an error
+
+      res.status(400).json({
+        error: 'Password reset functionality is not yet configured. Please contact support.',
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        error: error.message,
+      });
+    }
+  }
 }
