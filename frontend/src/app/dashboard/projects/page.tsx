@@ -65,7 +65,7 @@ export default function BrowseProjectsPage() {
         params.minBudget = minBudget;
       }
 
-      const { data } = await api.get('/influencer/projects', { params });
+      const { data } = await api.get('/influencer/projects/browse', { params });
       setProjects(data.projects || []);
       setTotal(data.total || 0);
     } catch (error) {
@@ -78,7 +78,7 @@ export default function BrowseProjectsPage() {
 
   const handleApply = async (projectId: string) => {
     try {
-      await api.post(`/influencer/projects/${projectId}/apply`);
+      await api.post(`/projects/${projectId}/apply`);
       fetchProjects();
     } catch (error: any) {
       console.error('Error applying to project:', error);
