@@ -25,6 +25,12 @@ interface SafiraConversion {
   customerIsNew: boolean;
 }
 
+interface PlatformStat {
+  platform: string;
+  count: number;
+  percentage: number;
+}
+
 interface SafiraDashboardData {
   overview: {
     referralCode: string;
@@ -59,6 +65,10 @@ interface SafiraDashboardData {
     lastConversionAt?: string;
   };
   recentConversions: SafiraConversion[];
+  breakdown?: {
+    byPlatform?: PlatformStat[];
+    byEventType?: Record<string, number>;
+  };
 }
 
 interface SocialLinks {
@@ -339,7 +349,7 @@ export default function SafiraDashboard() {
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{data.stats.totalClicks}</p>
-              <p className="text-sm text-gray-600">Clicks</p>
+              <p className="text-sm text-gray-600">Click to Pay</p>
             </CardContent>
           </Card>
           <Card>
@@ -361,6 +371,38 @@ export default function SafiraDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Platform Breakdown */}
+        {data.breakdown?.byPlatform && data.breakdown.byPlatform.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Traffic by Platform</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {data.breakdown.byPlatform.map((platform) => (
+                  <div key={platform.platform} className="flex items-center gap-4">
+                    <div className="w-24 text-sm font-medium text-gray-700 capitalize">
+                      {platform.platform || 'Direct'}
+                    </div>
+                    <div className="flex-1">
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full ${getPlatformColor(platform.platform)}`}
+                          style={{ width: `${platform.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="w-20 text-right">
+                      <span className="text-sm font-semibold text-gray-900">{platform.percentage}%</span>
+                      <span className="text-xs text-gray-500 ml-1">({platform.count})</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Recent Conversions */}
         <Card>
@@ -524,6 +566,19 @@ export default function SafiraDashboard() {
       )}
     </div>
   );
+}
+
+// Helper function for platform colors
+function getPlatformColor(platform: string): string {
+  const colors: Record<string, string> = {
+    instagram: 'bg-gradient-to-r from-purple-500 to-pink-500',
+    tiktok: 'bg-black',
+    youtube: 'bg-red-500',
+    twitter: 'bg-blue-400',
+    facebook: 'bg-blue-600',
+    direct: 'bg-gray-500',
+  };
+  return colors[platform?.toLowerCase()] || 'bg-purple-500';
 }
 
 // Helper function for platform icons

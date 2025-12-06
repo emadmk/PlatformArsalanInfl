@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 // Event types from Safira
 export enum SafiraEventType {
   PAGE_VIEW = 'PAGE_VIEW',
+  SESSION_START = 'SESSION_START',
   CLICK = 'CLICK',
   SIGNUP = 'SIGNUP',
   INVESTMENT = 'INVESTMENT',
@@ -15,7 +16,7 @@ export interface ISafiraTrackingEvent extends Document {
   eventType: SafiraEventType;
   eventId: string;
   referralCode: string;
-  influencerId: mongoose.Types.ObjectId;
+  influencerId?: mongoose.Types.ObjectId;
   timestamp: Date;
   utmSource: string;
   utmMedium?: string;
@@ -36,6 +37,7 @@ export interface ISafiraTrackingEvent extends Document {
   sessionDuration?: number;
   scrollDepth?: number;
   eventData?: Record<string, any>;
+  rawData?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,8 +62,9 @@ const SafiraTrackingEventSchema = new Schema<ISafiraTrackingEvent>(
     influencerId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: false,
       index: true,
+      sparse: true,
     },
     timestamp: {
       type: Date,
@@ -89,6 +92,7 @@ const SafiraTrackingEventSchema = new Schema<ISafiraTrackingEvent>(
     sessionDuration: Number,
     scrollDepth: Number,
     eventData: Schema.Types.Mixed,
+    rawData: Schema.Types.Mixed,
   },
   {
     timestamps: true,

@@ -213,16 +213,10 @@ class SafiraService {
 
   /**
    * Process tracking event from Safira webhook
+   * Saves ALL events, even if influencer not found (for future reference)
    */
   async processTrackingEvent(eventData: any): Promise<ISafiraTrackingEvent> {
-    // Find influencer by referral code
-    const stats = await SafiraInfluencerStats.findOne({
-      referralCode: eventData.referral_code || eventData.utm_source,
-    });
-
-    if (!stats) {
-      throw new AppError('Influencer not found for referral code', 404);
-    }
+    const referralCode = eventData.referral_code || eventData.utm_source;
 
     // Check for duplicate event
     const existingEvent = await SafiraTrackingEvent.findOne({
@@ -234,12 +228,17 @@ class SafiraService {
       return existingEvent;
     }
 
-    // Create tracking event
+    // Try to find influencer by referral code
+    const stats = await SafiraInfluencerStats.findOne({
+      referralCode: referralCode,
+    });
+
+    // Create tracking event - save even if influencer not found
     const trackingEvent = new SafiraTrackingEvent({
       eventType: eventData.event_type as SafiraEventType,
       eventId: eventData.event_id,
-      referralCode: stats.referralCode,
-      influencerId: stats.influencerId,
+      referralCode: referralCode,
+      influencerId: stats?.influencerId || undefined,
       timestamp: new Date(eventData.timestamp),
       utmSource: eventData.utm_source,
       utmMedium: eventData.utm_medium,
@@ -260,29 +259,49 @@ class SafiraService {
       sessionDuration: eventData.session_duration,
       scrollDepth: eventData.scroll_depth,
       eventData: eventData.event_data,
+      rawData: eventData,
     });
 
     await trackingEvent.save();
 
-    // Update influencer stats based on event type
-    const updateFields: any = {
-      lastActivityAt: new Date(),
-    };
+    // If influencer found, update their stats
+    if (stats) {
+      const updateFields: any = {
+        lastActivityAt: new Date(),
+      };
 
-    switch (eventData.event_type) {
-      case SafiraEventType.PAGE_VIEW:
-        updateFields.$inc = { totalPageViews: 1 };
-        break;
-      case SafiraEventType.CLICK:
-        updateFields.$inc = { totalClicks: 1 };
-        break;
-      case SafiraEventType.SIGNUP:
-        updateFields.$inc = { totalSignups: 1 };
-        break;
-    }
+      switch (eventData.event_type) {
+        case SafiraEventType.PAGE_VIEW:
+          updateFields.$inc = { totalPageViews: 1 };
+          break;
+        case SafiraEventType.SESSION_START:
+          updateFields.$inc = { totalClicks: 1 };
+          break;
+        case SafiraEventType.CLICK:
+          updateFields.$inc = { totalClicks: 1 };
+          break;
+        case SafiraEventType.SIGNUP:
+          updateFields.$inc = { totalSignups: 1 };
+          break;
+        case SafiraEventType.INVESTMENT:
+        case SafiraEventType.PAYMENT_CLICK:
+          updateFields.$inc = { totalClicks: 1 };
+          break;
+      }
 
-    if (updateFields.$inc) {
-      await SafiraInfluencerStats.findByIdAndUpdate(stats._id, updateFields);
+      if (updateFields.$inc) {
+        await SafiraInfluencerStats.findByIdAndUpdate(stats._id, updateFields);
+      }
+
+      logger.info(`Tracking event saved for influencer: ${referralCode}`, {
+        eventType: eventData.event_type,
+        eventId: eventData.event_id,
+      });
+    } else {
+      logger.info(`Tracking event saved (no influencer found): ${referralCode}`, {
+        eventType: eventData.event_type,
+        eventId: eventData.event_id,
+      });
     }
 
     return trackingEvent;
@@ -466,6 +485,22 @@ class SafiraService {
       { $limit: 10 },
     ]);
 
+    // Get platform breakdown (by utm_medium)
+    const platformBreakdown = await SafiraTrackingEvent.aggregate([
+      { $match: { influencerId: new mongoose.Types.ObjectId(userId) } },
+      { $group: { _id: '$utmMedium', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    // Calculate total for percentages
+    const totalPlatformEvents = platformBreakdown.reduce((sum: number, item: any) => sum + item.count, 0);
+
+    // Get event type breakdown
+    const eventTypeBreakdown = await SafiraTrackingEvent.aggregate([
+      { $match: { influencerId: new mongoose.Types.ObjectId(userId) } },
+      { $group: { _id: '$eventType', count: { $sum: 1 } } },
+    ]);
+
     return {
       overview: {
         referralCode: stats.referralCode,
@@ -521,6 +556,15 @@ class SafiraService {
           return acc;
         }, {}),
         byCountry: countryBreakdown.reduce((acc: any, item: any) => {
+          acc[item._id || 'unknown'] = item.count;
+          return acc;
+        }, {}),
+        byPlatform: platformBreakdown.map((item: any) => ({
+          platform: item._id || 'direct',
+          count: item.count,
+          percentage: totalPlatformEvents > 0 ? Math.round((item.count / totalPlatformEvents) * 100) : 0,
+        })),
+        byEventType: eventTypeBreakdown.reduce((acc: any, item: any) => {
           acc[item._id || 'unknown'] = item.count;
           return acc;
         }, {}),
