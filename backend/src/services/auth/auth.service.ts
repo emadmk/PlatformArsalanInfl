@@ -5,6 +5,8 @@ import { User, IUser } from '@/models/User.model';
 import config from '@/config';
 import { AppError } from '@/middleware/error.middleware';
 import { UserRole } from 'shared';
+import safiraService from '@/services/safira/safira.service';
+import logger from '@/config/logger';
 
 export class AuthService {
   async register(userData: {
@@ -14,7 +16,7 @@ export class AuthService {
     lastName: string;
     role: UserRole;
     profile?: any;
-  }): Promise<IUser> {
+  }): Promise<IUser & { safiraReferralCode?: string; safiraReferralUrl?: string }> {
     const existingUser = await User.findOne({ email: userData.email.toLowerCase() });
 
     if (existingUser) {
@@ -23,6 +25,27 @@ export class AuthService {
 
     const user = new User(userData);
     await user.save();
+
+    // Auto-assign Safira project for influencers
+    if (userData.role === UserRole.INFLUENCER) {
+      try {
+        const safiraAssignment = await safiraService.assignSafiraProjectToInfluencer(
+          user._id.toString()
+        );
+        logger.info(`Assigned Safira project to influencer: ${user.email}`, {
+          referralCode: safiraAssignment.referralCode,
+        });
+
+        // Add safira info to response
+        (user as any).safiraReferralCode = safiraAssignment.referralCode;
+        (user as any).safiraReferralUrl = safiraAssignment.referralUrl;
+      } catch (error: any) {
+        // Log error but don't fail registration if Safira assignment fails
+        logger.error(`Failed to assign Safira project to influencer: ${user.email}`, {
+          error: error.message,
+        });
+      }
+    }
 
     return user;
   }

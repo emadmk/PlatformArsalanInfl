@@ -7,6 +7,10 @@ import projectService from '@/services/project/project.service';
 import taskService from '@/services/task/task.service';
 import walletService from '@/services/payment/wallet.service';
 import transactionService from '@/services/payment/transaction.service';
+import safiraService from '@/services/safira/safira.service';
+import { SafiraInfluencerStats } from '@/models/SafiraInfluencerStats.model';
+import { SafiraConversion } from '@/models/SafiraConversion.model';
+import { SafiraTrackingEvent } from '@/models/SafiraTracking.model';
 import { UserRole, ProjectStatus, TaskStatus } from 'shared';
 
 const router = Router();
@@ -197,6 +201,293 @@ router.post('/earnings/withdraw', async (req: AuthRequest, res: Response) => {
     );
 
     res.json({ withdrawalId, message: 'Withdrawal request submitted' });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// ============================================
+// SAFIRA DASHBOARD ROUTES
+// ============================================
+
+// Get Safira dashboard overview
+router.get('/safira/dashboard', async (req: AuthRequest, res: Response) => {
+  try {
+    const dashboardStats = await safiraService.getInfluencerDashboardStats(req.user!.id);
+    res.json(dashboardStats);
+  } catch (error: any) {
+    // If stats not found, try to assign Safira project first
+    if (error.statusCode === 404) {
+      try {
+        const assignment = await safiraService.assignSafiraProjectToInfluencer(req.user!.id);
+        const dashboardStats = await safiraService.getInfluencerDashboardStats(req.user!.id);
+        res.json(dashboardStats);
+        return;
+      } catch (assignError: any) {
+        res.status(assignError.statusCode || 500).json({ error: assignError.message });
+        return;
+      }
+    }
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Get Safira referral link
+router.get('/safira/referral-link', async (req: AuthRequest, res: Response) => {
+  try {
+    const stats = await SafiraInfluencerStats.findOne({ influencerId: req.user!.id });
+
+    if (!stats) {
+      // Try to assign first
+      const assignment = await safiraService.assignSafiraProjectToInfluencer(req.user!.id);
+      res.json({
+        referralCode: assignment.referralCode,
+        referralUrl: assignment.referralUrl,
+        socialLinks: {
+          instagram: `${assignment.referralUrl}&utm_medium=instagram`,
+          tiktok: `${assignment.referralUrl}&utm_medium=tiktok`,
+          youtube: `${assignment.referralUrl}&utm_medium=youtube`,
+          twitter: `${assignment.referralUrl}&utm_medium=twitter`,
+          facebook: `${assignment.referralUrl}&utm_medium=facebook`,
+        },
+      });
+      return;
+    }
+
+    res.json({
+      referralCode: stats.referralCode,
+      referralUrl: stats.referralUrl,
+      socialLinks: {
+        instagram: `${stats.referralUrl}&utm_medium=instagram`,
+        tiktok: `${stats.referralUrl}&utm_medium=tiktok`,
+        youtube: `${stats.referralUrl}&utm_medium=youtube`,
+        twitter: `${stats.referralUrl}&utm_medium=twitter`,
+        facebook: `${stats.referralUrl}&utm_medium=facebook`,
+      },
+    });
+  } catch (error: any) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Get Safira slot details
+router.get('/safira/slots', async (req: AuthRequest, res: Response) => {
+  try {
+    const stats = await SafiraInfluencerStats.findOne({ influencerId: req.user!.id });
+
+    if (!stats) {
+      res.status(404).json({ error: 'Safira stats not found' });
+      return;
+    }
+
+    res.json({
+      totalSlots: stats.totalSlots,
+      filledSlots: stats.filledSlots,
+      emptySlots: stats.totalSlots - stats.filledSlots,
+      amountPerSlot: stats.amountPerSlot,
+      totalLockedAmount: stats.totalLockedAmount,
+      totalEarnedAmount: stats.totalEarnedAmount,
+      availableBalance: stats.availableBalance,
+      progress: Math.round((stats.filledSlots / stats.totalSlots) * 100),
+      slots: stats.slots.map((slot) => ({
+        number: slot.slotNumber,
+        filled: slot.filled,
+        amount: slot.amount,
+        filledAt: slot.filledAt,
+      })),
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get Safira conversion history
+router.get('/safira/conversions', async (req: AuthRequest, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const skip = (page - 1) * limit;
+
+    const [conversions, total] = await Promise.all([
+      SafiraConversion.find({ influencerId: req.user!.id })
+        .sort({ timestamp: -1 })
+        .skip(skip)
+        .limit(limit),
+      SafiraConversion.countDocuments({ influencerId: req.user!.id }),
+    ]);
+
+    res.json({
+      conversions: conversions.map((c) => ({
+        id: c.conversionId,
+        type: c.conversionType,
+        amount: c.transaction.commission,
+        productName: c.product.name,
+        productValue: c.transaction.productValue,
+        slotNumber: c.slotNumber,
+        status: c.status,
+        timestamp: c.timestamp,
+        customerIsNew: c.customer.isNew,
+      })),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get Safira tracking events
+router.get('/safira/tracking', async (req: AuthRequest, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 50;
+    const skip = (page - 1) * limit;
+    const eventType = req.query.type as string;
+
+    const query: any = { influencerId: req.user!.id };
+    if (eventType) {
+      query.eventType = eventType;
+    }
+
+    const [events, total] = await Promise.all([
+      SafiraTrackingEvent.find(query).sort({ timestamp: -1 }).skip(skip).limit(limit),
+      SafiraTrackingEvent.countDocuments(query),
+    ]);
+
+    res.json({
+      events: events.map((e) => ({
+        id: e.eventId,
+        type: e.eventType,
+        timestamp: e.timestamp,
+        deviceType: e.deviceType,
+        browser: e.browser,
+        country: e.country,
+        city: e.city,
+        pageUrl: e.pageUrl,
+      })),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get Safira analytics summary
+router.get('/safira/analytics', async (req: AuthRequest, res: Response) => {
+  try {
+    const stats = await SafiraInfluencerStats.findOne({ influencerId: req.user!.id });
+
+    if (!stats) {
+      res.status(404).json({ error: 'Safira stats not found' });
+      return;
+    }
+
+    // Get today's stats
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayEvents = await SafiraTrackingEvent.countDocuments({
+      influencerId: req.user!.id,
+      timestamp: { $gte: today },
+    });
+
+    const todayConversions = await SafiraConversion.countDocuments({
+      influencerId: req.user!.id,
+      timestamp: { $gte: today },
+    });
+
+    // Get last 7 days stats
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const weeklyStats = await SafiraTrackingEvent.aggregate([
+      {
+        $match: {
+          influencerId: stats.influencerId,
+          timestamp: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: '%Y-%m-%d', date: '$timestamp' },
+          },
+          clicks: {
+            $sum: { $cond: [{ $eq: ['$eventType', 'CLICK'] }, 1, 0] },
+          },
+          pageViews: {
+            $sum: { $cond: [{ $eq: ['$eventType', 'PAGE_VIEW'] }, 1, 0] },
+          },
+          signups: {
+            $sum: { $cond: [{ $eq: ['$eventType', 'SIGNUP'] }, 1, 0] },
+          },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const weeklyConversions = await SafiraConversion.aggregate([
+      {
+        $match: {
+          influencerId: stats.influencerId,
+          timestamp: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: '%Y-%m-%d', date: '$timestamp' },
+          },
+          conversions: { $sum: 1 },
+          commission: { $sum: '$transaction.commission' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    res.json({
+      overview: {
+        totalClicks: stats.totalClicks,
+        totalPageViews: stats.totalPageViews,
+        totalSignups: stats.totalSignups,
+        totalConversions: stats.totalConversions,
+        conversionRate: stats.conversionRate.toFixed(2),
+      },
+      today: {
+        events: todayEvents,
+        conversions: todayConversions,
+      },
+      weekly: {
+        tracking: weeklyStats,
+        conversions: weeklyConversions,
+      },
+      earnings: {
+        totalEarned: stats.totalEarnedAmount,
+        availableBalance: stats.availableBalance,
+        totalWithdrawn: stats.totalWithdrawnAmount,
+        potentialEarnings: (stats.totalSlots - stats.filledSlots) * stats.amountPerSlot,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Request withdrawal from Safira earnings
+router.post('/safira/withdraw', async (req: AuthRequest, res: Response) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount || amount <= 0) {
+      res.status(400).json({ error: 'Invalid withdrawal amount' });
+      return;
+    }
+
+    const result = await safiraService.requestWithdrawal(req.user!.id, amount);
+    res.json(result);
   } catch (error: any) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

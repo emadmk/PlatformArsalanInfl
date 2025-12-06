@@ -76,6 +76,8 @@ const InfluencerProfileSchema = new Schema({
   rating: { type: Number, default: 0, min: 0, max: 5 },
   totalProjects: { type: Number, default: 0 },
   successRate: { type: Number, default: 0 },
+  // Safira Integration
+  safiraReferralCode: { type: String, unique: true, sparse: true },
 });
 
 const BusinessProfileSchema = new Schema({
@@ -183,6 +185,7 @@ const UserSchema = new Schema<IUser>(
 UserSchema.index({ email: 1 });
 UserSchema.index({ role: 1 });
 UserSchema.index({ 'profile.verified': 1 });
+UserSchema.index({ 'profile.safiraReferralCode': 1 });
 UserSchema.index({ createdAt: -1 });
 
 // Hash password before saving

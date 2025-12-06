@@ -110,6 +110,24 @@ export default function InfluencerDashboard() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Safira Banner */}
+        <Link href="/dashboard/safira">
+          <div className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 text-white hover:shadow-lg transition-all cursor-pointer">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold mb-1">Safira Luxury Referral Program</h2>
+                <p className="text-purple-100">Earn $40 for every successful referral. 20 slots = $800!</p>
+              </div>
+              <div className="hidden md:flex items-center gap-2 bg-white/20 rounded-lg px-4 py-2">
+                <span className="font-semibold">View Dashboard</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </Link>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -258,7 +276,14 @@ export default function InfluencerDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Link href="/dashboard/safira">
+                <div className="p-4 border-2 border-purple-200 bg-purple-50 rounded-lg hover:border-purple-500 hover:shadow-md transition-all cursor-pointer">
+                  <h3 className="font-semibold text-purple-900 mb-2">Safira Program</h3>
+                  <p className="text-sm text-purple-600">Earn $40 per referral</p>
+                </div>
+              </Link>
+
               <Link href="/dashboard/projects">
                 <div className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all cursor-pointer">
                   <h3 className="font-semibold text-gray-900 mb-2">Browse Projects</h3>

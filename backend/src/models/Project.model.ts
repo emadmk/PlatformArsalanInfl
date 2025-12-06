@@ -37,6 +37,15 @@ export interface IProject extends Document {
   adminNotes?: string;
   isPublic: boolean;
   invitedInfluencers: mongoose.Types.ObjectId[];
+  metadata?: {
+    slug?: string;
+    isSafiraProject?: boolean;
+    safiraConfig?: {
+      amountPerSlot: number;
+      totalSlots: number;
+      totalLockedAmount: number;
+    };
+  };
   createdAt: Date;
   updatedAt: Date;
   startedAt?: Date;
@@ -133,6 +142,15 @@ const ProjectSchema = new Schema<IProject>(
         ref: 'User',
       },
     ],
+    metadata: {
+      slug: { type: String, unique: true, sparse: true },
+      isSafiraProject: { type: Boolean, default: false },
+      safiraConfig: {
+        amountPerSlot: Number,
+        totalSlots: Number,
+        totalLockedAmount: Number,
+      },
+    },
     startedAt: Date,
     completedAt: Date,
   },
@@ -148,5 +166,7 @@ ProjectSchema.index({ category: 1 });
 ProjectSchema.index({ createdAt: -1 });
 ProjectSchema.index({ deadline: 1 });
 ProjectSchema.index({ 'requirements.platforms': 1 });
+ProjectSchema.index({ 'metadata.slug': 1 });
+ProjectSchema.index({ 'metadata.isSafiraProject': 1 });
 
 export const Project = mongoose.model<IProject>('Project', ProjectSchema);

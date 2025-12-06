@@ -124,6 +124,18 @@ export const config = {
     origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
     credentials: true,
   },
+
+  // Safira Integration
+  safira: {
+    apiKey: process.env.SAFIRA_API_KEY,
+    webhookSecret: process.env.SAFIRA_WEBHOOK_SECRET,
+    apiUrl: process.env.SAFIRA_API_URL || 'https://safiralux.com/api/v1/external',
+    baseReferralUrl: process.env.SAFIRA_REFERRAL_URL || 'https://safiralux.com/invest',
+    // Slot configuration
+    totalSlots: parseInt(process.env.SAFIRA_TOTAL_SLOTS || '20'),
+    amountPerSlot: parseFloat(process.env.SAFIRA_AMOUNT_PER_SLOT || '40'),
+    totalLockedAmount: parseFloat(process.env.SAFIRA_TOTAL_LOCKED_AMOUNT || '800'),
+  },
 };
 
 export default config;
