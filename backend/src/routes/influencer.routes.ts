@@ -36,24 +36,36 @@ router.get('/dashboard/stats', async (req: AuthRequest, res: Response) => {
       status: TaskStatus.COMPLETED,
     });
 
-    // Get wallet balance and calculate totals
-    const balance = await walletService.getBalance(userId);
-    const { transactions } = await transactionService.getTransactions(userId);
+    // Get wallet balance - handle errors gracefully
+    let balance = { total: 0, available: 0, locked: 0 };
+    let totalEarnings = 0;
+    let pendingPayments = 0;
 
-    const totalEarnings = transactions
-      .filter((t: any) => t.type === 'credit' && t.status === 'completed')
-      .reduce((sum: number, t: any) => sum + t.amount, 0);
+    try {
+      balance = await walletService.getBalance(userId);
+    } catch (err) {
+      // Wallet not found, use defaults
+    }
 
-    const pendingPayments = transactions
-      .filter((t: any) => t.type === 'credit' && t.status === 'pending')
-      .reduce((sum: number, t: any) => sum + t.amount, 0);
+    try {
+      const { transactions } = await transactionService.getTransactions(userId);
+      totalEarnings = transactions
+        .filter((t: any) => t.type === 'credit' && t.status === 'completed')
+        .reduce((sum: number, t: any) => sum + t.amount, 0);
+
+      pendingPayments = transactions
+        .filter((t: any) => t.type === 'credit' && t.status === 'pending')
+        .reduce((sum: number, t: any) => sum + t.amount, 0);
+    } catch (err) {
+      // Transactions not available (PostgreSQL not configured), use defaults
+    }
 
     res.json({
       activeProjects,
       completedTasks,
       totalEarnings,
       pendingPayments,
-      currentBalance: balance,
+      currentBalance: balance.available,
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

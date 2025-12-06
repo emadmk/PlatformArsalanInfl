@@ -57,12 +57,20 @@ export default function InfluencerDashboard() {
       });
 
       // Fetch recent projects
-      const { data: projectsData } = await api.get('/influencer/projects?limit=5');
-      setRecentProjects(projectsData.projects || []);
+      try {
+        const { data: projectsData } = await api.get('/influencer/projects?limit=5');
+        setRecentProjects(projectsData.projects || []);
+      } catch (err) {
+        // Projects not available, keep empty
+      }
 
       // Fetch recent tasks
-      const { data: tasksData } = await api.get('/influencer/tasks?limit=5');
-      setRecentTasks(tasksData.tasks || []);
+      try {
+        const { data: tasksData } = await api.get('/influencer/tasks?limit=5');
+        setRecentTasks(tasksData.tasks || []);
+      } catch (err) {
+        // Tasks not available, keep empty
+      }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       // Keep default values on error
@@ -101,8 +109,8 @@ export default function InfluencerDashboard() {
               <Link href="/dashboard/projects">
                 <Button variant="outline">Browse Projects</Button>
               </Link>
-              <Link href="/dashboard/profile">
-                <Button>My Profile</Button>
+              <Link href="/dashboard/safira">
+                <Button>Safira Program</Button>
               </Link>
             </div>
           </div>
@@ -236,12 +244,7 @@ export default function InfluencerDashboard() {
           {/* Recent Tasks */}
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Recent Tasks</CardTitle>
-                <Link href="/dashboard/tasks" className="text-sm text-primary-600 hover:text-primary-700">
-                  View All
-                </Link>
-              </div>
+              <CardTitle>Recent Tasks</CardTitle>
             </CardHeader>
             <CardContent>
               {recentTasks.length === 0 ? (
@@ -276,7 +279,7 @@ export default function InfluencerDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link href="/dashboard/safira">
                 <div className="p-4 border-2 border-purple-200 bg-purple-50 rounded-lg hover:border-purple-500 hover:shadow-md transition-all cursor-pointer">
                   <h3 className="font-semibold text-purple-900 mb-2">Safira Program</h3>
@@ -295,13 +298,6 @@ export default function InfluencerDashboard() {
                 <div className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all cursor-pointer">
                   <h3 className="font-semibold text-gray-900 mb-2">Manage Wallet</h3>
                   <p className="text-sm text-gray-600">View balance and withdraw funds</p>
-                </div>
-              </Link>
-
-              <Link href="/dashboard/chat">
-                <div className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all cursor-pointer">
-                  <h3 className="font-semibold text-gray-900 mb-2">Messages</h3>
-                  <p className="text-sm text-gray-600">Chat with businesses</p>
                 </div>
               </Link>
             </div>
