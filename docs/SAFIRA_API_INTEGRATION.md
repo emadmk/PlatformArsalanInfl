@@ -10,36 +10,36 @@ This document describes the API integration between **Safira Luxury (safiralux.c
 
 ## Authentication
 
-### For Webhook Endpoints
-All webhook requests must include HMAC signature verification:
+### All Requests (Webhooks & API)
+All requests from Safira to MicroInfluencer must include Bearer token:
 
 ```
 Headers:
-  X-Safira-Signature: <HMAC-SHA256 signature of request body>
-  X-Safira-Timestamp: <Unix timestamp in seconds>
+  Authorization: Bearer microinfluencer-key-2024
   Content-Type: application/json
 ```
 
-**Signature Generation:**
-```javascript
-const crypto = require('crypto');
+### Configuration Summary
 
-function generateSignature(body, secret, timestamp) {
-  const payload = timestamp + '.' + JSON.stringify(body);
-  return crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-}
+| Direction | Header | Value |
+|-----------|--------|-------|
+| Safira → MicroInfluencer | `Authorization` | `Bearer microinfluencer-key-2024` |
+| MicroInfluencer → Safira | `X-Safira-Api-Key` | `safira-external-key-2024` |
+
+### Environment Variables
+
+**Safira (.env):**
+```
+EXTERNAL_API_KEY=safira-external-key-2024
+MICROINFLUENCER_API_URL=https://arsalan.safiralux.com/api/v1
+MICROINFLUENCER_API_KEY=microinfluencer-key-2024
 ```
 
-### For API Read Endpoints
-All API read requests must include API key:
-
+**MicroInfluencer (.env):**
 ```
-Headers:
-  X-Safira-Api-Key: <your-api-key>
-  Content-Type: application/json
+SAFIRA_API_KEY=microinfluencer-key-2024
+SAFIRA_WEBHOOK_SECRET=safira-external-key-2024
+SAFIRA_API_URL=https://safiralux.com/api/v1/external
 ```
 
 ---
@@ -343,30 +343,13 @@ https://safiralux.com/invest?ref=INF_ABC123&utm_source=INF_ABC123&utm_medium=ins
 
 ---
 
-## Environment Variables Required
-
-Please provide us with these values:
-
-```
-SAFIRA_API_KEY=<API key for us to verify your requests>
-SAFIRA_WEBHOOK_SECRET=<Secret for HMAC signature verification>
-```
-
-We will configure:
-```
-SAFIRA_REFERRAL_URL=https://safiralux.com/invest
-```
-
----
-
 ## Testing
 
 ### Test Webhook (Tracking Event)
 ```bash
 curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-tracking \
   -H "Content-Type: application/json" \
-  -H "X-Safira-Signature: <signature>" \
-  -H "X-Safira-Timestamp: <timestamp>" \
+  -H "Authorization: Bearer microinfluencer-key-2024" \
   -d '{
     "event_type": "PAGE_VIEW",
     "event_id": "test-123",
@@ -375,10 +358,32 @@ curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-tracking \
   }'
 ```
 
+### Test Webhook (Conversion)
+```bash
+curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-conversion \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer microinfluencer-key-2024" \
+  -d '{
+    "conversion_type": "INVESTMENT",
+    "conversion_id": "conv-test-123",
+    "referral_code": "INF_ABC123",
+    "timestamp": "2024-01-15T14:25:00Z",
+    "customer": { "id": "cust-1", "email_hash": "abc", "is_new": true },
+    "transaction": { "amount": 1000, "currency": "USD", "product_value": 1000 },
+    "product": { "id": "prod-1", "name": "Gold Package", "type": "investment" }
+  }'
+```
+
 ### Test API (Get Influencer)
 ```bash
 curl -X GET https://arsalan.safiralux.com/api/v1/influencers/INF_ABC123 \
-  -H "X-Safira-Api-Key: <your-api-key>"
+  -H "Authorization: Bearer microinfluencer-key-2024"
+```
+
+### Test API (Get Active Influencers)
+```bash
+curl -X GET https://arsalan.safiralux.com/api/v1/influencers/active \
+  -H "Authorization: Bearer microinfluencer-key-2024"
 ```
 
 ---
