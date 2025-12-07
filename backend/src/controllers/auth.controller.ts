@@ -7,12 +7,26 @@ import { UserRole } from 'shared';
 export class AuthController {
   async register(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const { fullName, ...rest } = req.body;
+      const { fullName, firstName: providedFirstName, lastName: providedLastName, ...rest } = req.body;
 
-      // Split fullName into firstName and lastName
-      const nameParts = fullName?.trim().split(/\s+/) || [];
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+      let firstName = providedFirstName;
+      let lastName = providedLastName;
+
+      // If firstName/lastName not provided, try to split fullName
+      if (!firstName && fullName) {
+        const nameParts = fullName.trim().split(/\s+/) || [];
+        firstName = nameParts[0] || '';
+        lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+      }
+
+      // Ensure we have values
+      if (!firstName) {
+        res.status(400).json({ error: 'First name is required' });
+        return;
+      }
+      if (!lastName) {
+        lastName = firstName; // Use firstName as lastName if not provided
+      }
 
       const user = await authService.register({
         ...rest,
