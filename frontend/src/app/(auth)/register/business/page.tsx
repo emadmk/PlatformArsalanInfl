@@ -123,9 +123,28 @@ export default function BusinessRegisterPage() {
     setError('');
 
     try {
+      // Split contact name into firstName and lastName
+      const nameParts = formData.contactName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+
       const { data } = await api.post('/auth/register', {
-        ...formData,
+        email: formData.email,
+        password: formData.password,
+        firstName,
+        lastName,
         role: 'business',
+        profile: {
+          companyName: formData.companyName,
+          industry: formData.industry,
+          companySize: formData.companySize,
+          website: formData.website,
+          description: formData.description,
+          location: formData.location,
+          goals: formData.goals,
+          monthlyBudget: formData.monthlyBudget,
+          targetAudience: formData.targetAudience,
+        },
       });
 
       // Store tokens

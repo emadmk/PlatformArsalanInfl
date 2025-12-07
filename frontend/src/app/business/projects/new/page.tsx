@@ -34,6 +34,7 @@ export default function CreateCampaignPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    category: '',
     budget: '',
     deadline: '',
     maxInfluencers: '5',
@@ -105,8 +106,8 @@ export default function CreateCampaignPage() {
       newErrors.deadline = 'Deadline must be in the future';
     }
 
-    if (formData.requirements.categories.length === 0) {
-      newErrors.categories = 'Please select at least one category';
+    if (!formData.category) {
+      newErrors.category = 'Please select a category';
     }
 
     if (formData.requirements.platforms.length === 0) {
@@ -127,20 +128,36 @@ export default function CreateCampaignPage() {
     setIsSubmitting(true);
 
     try {
+      // Parse deliverables from text to array of objects
+      const deliverablesArray = formData.deliverables
+        .split('\n')
+        .filter(line => line.trim())
+        .map((line, index) => ({
+          title: line.trim(),
+          description: line.trim(),
+          quantity: 1,
+        }));
+
       const projectData = {
         title: formData.title,
         description: formData.description,
+        category: formData.category,
         budget: parseFloat(formData.budget),
         deadline: formData.deadline,
         maxInfluencers: parseInt(formData.maxInfluencers),
         requirements: {
-          categories: formData.requirements.categories,
+          categories: formData.requirements.categories.length > 0
+            ? formData.requirements.categories
+            : [formData.category],
           platforms: formData.requirements.platforms,
           minFollowers: formData.requirements.minFollowers
             ? parseInt(formData.requirements.minFollowers)
             : 0,
+          contentTypes: formData.requirements.platforms,
         },
-        deliverables: formData.deliverables,
+        deliverables: deliverablesArray.length > 0 ? deliverablesArray : [
+          { title: 'Content Creation', description: 'Create content as per guidelines', quantity: 1 }
+        ],
         guidelines: formData.guidelines,
         status: 'active',
       };
@@ -215,6 +232,30 @@ export default function CreateCampaignPage() {
                   )}
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Category *
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-500 transition-all text-gray-900 bg-white ${
+                      errors.category ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category && (
+                    <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -278,7 +319,7 @@ export default function CreateCampaignPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Categories * <span className="text-gray-500 font-normal">(Select all that apply)</span>
+                    Additional Categories <span className="text-gray-500 font-normal">(Optional - select all that apply)</span>
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {categories.map((category) => (
@@ -296,9 +337,6 @@ export default function CreateCampaignPage() {
                       </button>
                     ))}
                   </div>
-                  {errors.categories && (
-                    <p className="mt-1 text-sm text-red-600">{errors.categories}</p>
-                  )}
                 </div>
 
                 <div>
@@ -365,7 +403,7 @@ export default function CreateCampaignPage() {
                     value={formData.deliverables}
                     onChange={handleChange}
                     rows={3}
-                    placeholder="What do you expect from influencers? (e.g., 3 Instagram posts, 2 Stories, 1 Reel...)"
+                    placeholder="Enter each deliverable on a new line, e.g.:&#10;3 Instagram posts&#10;2 Instagram Stories&#10;1 YouTube video"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-500 transition-all text-gray-900 bg-white"
                   />
                 </div>
