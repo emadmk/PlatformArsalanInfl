@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AdminNavbar } from '@/components/shared/AdminNavbar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Card';
@@ -68,7 +68,7 @@ interface Withdrawal {
   adminNote?: string;
 }
 
-export default function AdminPaymentsPage() {
+function AdminPaymentsContent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('type') === 'withdrawals' ? 'withdrawals' : 'transactions';
 
@@ -837,5 +837,17 @@ export default function AdminPaymentsPage() {
         </div>
       )}
     </>
+  );
+}
+
+export default function AdminPaymentsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    }>
+      <AdminPaymentsContent />
+    </Suspense>
   );
 }

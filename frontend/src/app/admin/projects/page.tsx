@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AdminNavbar } from '@/components/shared/AdminNavbar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Card';
@@ -57,7 +57,7 @@ interface Project {
   updatedAt: string;
 }
 
-export default function AdminProjectsPage() {
+function AdminProjectsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -809,5 +809,17 @@ export default function AdminProjectsPage() {
         </div>
       )}
     </>
+  );
+}
+
+export default function AdminProjectsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    }>
+      <AdminProjectsContent />
+    </Suspense>
   );
 }

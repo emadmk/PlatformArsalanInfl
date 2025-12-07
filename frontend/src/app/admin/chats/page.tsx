@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AdminNavbar } from '@/components/shared/AdminNavbar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Card';
@@ -69,7 +69,7 @@ interface Message {
   createdAt: string;
 }
 
-export default function AdminChatsPage() {
+function AdminChatsContent() {
   const searchParams = useSearchParams();
   const targetUserId = searchParams.get('user');
 
@@ -716,5 +716,17 @@ export default function AdminChatsPage() {
         </div>
       )}
     </>
+  );
+}
+
+export default function AdminChatsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    }>
+      <AdminChatsContent />
+    </Suspense>
   );
 }
