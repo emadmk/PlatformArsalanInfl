@@ -477,7 +477,7 @@ router.get('/chats', async (req: AuthRequest, res: Response) => {
 router.get('/chats/stats', async (req: AuthRequest, res: Response) => {
   try {
     const { Chat } = await import('@/models/Chat.model');
-    const { Message } = await import('@/models/Message.model');
+    const { Message } = await import('@/models/Chat.model');
 
     const totalChats = await Chat.countDocuments();
     const activeChats = await Chat.countDocuments({ status: 'active' });
@@ -497,9 +497,9 @@ router.get('/chats/stats', async (req: AuthRequest, res: Response) => {
 
 router.get('/chats/:id/messages', async (req: AuthRequest, res: Response) => {
   try {
-    const { Message } = await import('@/models/Message.model');
+    const { Message } = await import('@/models/Chat.model');
     const messages = await Message.find({ chatId: req.params.id })
-      .populate('sender', 'firstName lastName role')
+      .populate('senderId', 'firstName lastName role')
       .sort({ createdAt: 1 });
     res.json({ messages });
   } catch (error: any) {
@@ -509,12 +509,12 @@ router.get('/chats/:id/messages', async (req: AuthRequest, res: Response) => {
 
 router.post('/chats/:id/messages', async (req: AuthRequest, res: Response) => {
   try {
-    const { Message } = await import('@/models/Message.model');
+    const { Message } = await import('@/models/Chat.model');
     const { Chat } = await import('@/models/Chat.model');
 
     const message = new Message({
       chatId: req.params.id,
-      sender: req.user!.id,
+      senderId: req.user!.id,
       content: req.body.content,
       type: req.body.type || 'text',
     });
@@ -522,12 +522,8 @@ router.post('/chats/:id/messages', async (req: AuthRequest, res: Response) => {
 
     // Update chat's last message
     await Chat.findByIdAndUpdate(req.params.id, {
-      lastMessage: {
-        content: req.body.content,
-        sender: req.user!.id,
-        createdAt: new Date(),
-      },
-      updatedAt: new Date(),
+      lastMessage: message._id,
+      lastMessageAt: new Date(),
     });
 
     res.json({ message });
@@ -584,7 +580,7 @@ router.put('/chats/:id/unsuspend', async (req: AuthRequest, res: Response) => {
 router.delete('/chats/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { Chat } = await import('@/models/Chat.model');
-    const { Message } = await import('@/models/Message.model');
+    const { Message } = await import('@/models/Chat.model');
 
     await Message.deleteMany({ chatId: req.params.id });
     await Chat.findByIdAndDelete(req.params.id);
@@ -712,7 +708,7 @@ router.get('/analytics', async (req: AuthRequest, res: Response) => {
     let activeChatsToday = 0;
     try {
       const { Chat } = await import('@/models/Chat.model');
-      const { Message } = await import('@/models/Message.model');
+      const { Message } = await import('@/models/Chat.model');
       totalChats = await Chat.countDocuments();
       totalMessages = await Message.countDocuments();
       activeChatsToday = await Chat.countDocuments({
