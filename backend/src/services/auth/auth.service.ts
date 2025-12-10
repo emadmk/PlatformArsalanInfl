@@ -209,6 +209,26 @@ export class AuthService {
     }
   }
 
+  // Generate tokens for a user (used for auto-login after registration)
+  async generateTokensForUser(userId: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+
+    user.lastLogin = new Date();
+    await user.save();
+
+    return { accessToken, refreshToken };
+  }
+
   private generateAccessToken(user: IUser): string {
     return jwt.sign(
       {

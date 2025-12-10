@@ -52,9 +52,14 @@ export class AuthController {
         role: UserRole.INFLUENCER,
       });
 
+      // Auto-login after registration - generate tokens
+      const tokens = await authService.generateTokensForUser(user._id.toString());
+
       res.status(201).json({
         message: 'Influencer registered successfully',
         user,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
       });
     } catch (error: any) {
       res.status(error.statusCode || 500).json({
@@ -70,9 +75,14 @@ export class AuthController {
         role: UserRole.BUSINESS,
       });
 
+      // Auto-login after registration - generate tokens
+      const tokens = await authService.generateTokensForUser(user._id.toString());
+
       res.status(201).json({
         message: 'Business registered successfully',
         user,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
       });
     } catch (error: any) {
       res.status(error.statusCode || 500).json({

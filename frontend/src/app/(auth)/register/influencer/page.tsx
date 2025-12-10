@@ -129,9 +129,8 @@ export default function InfluencerRegisterPage() {
     setError('');
 
     try {
-      const { data } = await api.post('/auth/register', {
+      const { data } = await api.post('/auth/register/influencer', {
         ...formData,
-        role: 'influencer',
       });
 
       // Store tokens

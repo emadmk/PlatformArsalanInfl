@@ -128,12 +128,11 @@ export default function BusinessRegisterPage() {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
 
-      const { data } = await api.post('/auth/register', {
+      const { data } = await api.post('/auth/register/business', {
         email: formData.email,
         password: formData.password,
         firstName,
         lastName,
-        role: 'business',
         profile: {
           companyName: formData.companyName,
           industry: formData.industry,
