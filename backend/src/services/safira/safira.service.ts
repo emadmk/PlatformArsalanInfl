@@ -53,7 +53,67 @@ class SafiraService {
     });
 
     if (!project) {
-      throw new AppError('Safira project not found. Please run seed script.', 404);
+      // Auto-create Safira project if it doesn't exist
+      logger.info('Safira project not found, creating automatically...');
+
+      // First create or get Safira business user
+      let safiraBusiness = await User.findOne({
+        email: 'safira@microcollaboration.com'
+      });
+
+      if (!safiraBusiness) {
+        safiraBusiness = new User({
+          email: 'safira@microcollaboration.com',
+          password: 'SafiraLux2024!',
+          firstName: 'Safira',
+          lastName: 'Luxury',
+          role: UserRole.BUSINESS,
+          profile: {
+            companyName: 'Safira Luxury',
+            industry: 'Luxury Investment',
+            description: 'Premium investment platform',
+            website: 'https://safiralux.com',
+          },
+          emailVerified: true,
+          isActive: true,
+        });
+        await safiraBusiness.save();
+        logger.info('Created Safira business account');
+      }
+
+      // Create the Safira project
+      project = new Project({
+        businessId: safiraBusiness._id,
+        title: 'Safira Luxury Referral Program',
+        description: 'Earn $40 for every successful referral. 20 slots = $800!',
+        category: 'Investment',
+        tags: ['investment', 'luxury', 'referral'],
+        budget: 1000000,
+        currency: 'USD',
+        status: 'active',
+        requirements: {
+          minFollowers: 100,
+          platforms: ['instagram', 'tiktok', 'youtube', 'twitter', 'facebook'],
+          contentTypes: ['POST', 'STORY', 'REEL', 'VIDEO'],
+        },
+        deliverables: [
+          { title: 'Share Referral Link', description: 'Share your unique referral link', quantity: 1 },
+        ],
+        deadline: new Date('2030-12-31'),
+        maxInfluencers: 100000,
+        isPublic: false,
+        metadata: {
+          slug: SAFIRA_PROJECT_SLUG,
+          isSafiraProject: true,
+          safiraConfig: {
+            amountPerSlot: config.safira?.amountPerSlot || 40,
+            totalSlots: config.safira?.totalSlots || 20,
+            totalLockedAmount: config.safira?.totalLockedAmount || 800,
+          },
+        },
+      });
+      await project.save();
+      logger.info('Created Safira project automatically');
     }
 
     return project;

@@ -79,6 +79,15 @@ interface SocialLinks {
   facebook: string;
 }
 
+interface SafiraTask {
+  id: string;
+  title: string;
+  description: string;
+  action?: string;
+  actionUrl?: string;
+  completed: boolean;
+}
+
 export default function SafiraDashboard() {
   const [data, setData] = useState<SafiraDashboardData | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLinks | null>(null);
@@ -87,6 +96,52 @@ export default function SafiraDashboard() {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [tasks, setTasks] = useState<SafiraTask[]>([
+    {
+      id: '1',
+      title: 'Follow SafiraLux on Instagram',
+      description: 'Follow our official Instagram page to get started',
+      action: 'Follow Now',
+      actionUrl: 'https://www.instagram.com/safiralux.co/',
+      completed: false
+    },
+    {
+      id: '2',
+      title: 'Share 3 Stories',
+      description: 'Post 3 of our promotional videos to your Instagram stories. Download them below and add your referral link!',
+      completed: false
+    },
+    {
+      id: '3',
+      title: 'Create Your Own Video',
+      description: 'Record a short video recommending SafiraLux to your followers. Include your referral link in the story!',
+      completed: false
+    },
+    {
+      id: '4',
+      title: 'Share Our Video',
+      description: 'Repost one of our brand videos to your stories with your referral link',
+      completed: false
+    },
+    {
+      id: '5',
+      title: 'Story Our Post',
+      description: 'Share one of our Instagram posts to your story and tag us',
+      completed: false
+    },
+    {
+      id: '6',
+      title: 'Explain Our Product',
+      description: 'Create content explaining what SafiraLux offers to your audience',
+      completed: false
+    }
+  ]);
+
+  const handleTaskComplete = (taskId: string) => {
+    setTasks(prev => prev.map(task =>
+      task.id === taskId ? { ...task, completed: true } : task
+    ));
+  };
 
   useEffect(() => {
     fetchDashboardData();
@@ -176,6 +231,90 @@ export default function SafiraDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Quick Start Tasks - How It Works */}
+        <Card className="mb-8 border-2 border-purple-200">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl text-purple-900">Get Started in Minutes!</CardTitle>
+                <p className="text-sm text-purple-600 mt-1">Complete these quick tasks to maximize your earnings</p>
+              </div>
+              <Badge variant="primary">{tasks.filter(t => t.completed).length}/{tasks.length} Done</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {tasks.filter(task => !task.completed).map((task, index) => (
+                <div
+                  key={task.id}
+                  className="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">{task.title}</h3>
+                    <p className="text-sm text-gray-600 mb-3">{task.description}</p>
+                    <div className="flex items-center gap-3">
+                      {task.actionUrl && (
+                        <a
+                          href={task.actionUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
+                        >
+                          {task.action}
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleTaskComplete(task.id)}
+                        className="inline-flex items-center gap-2 px-4 py-2 border-2 border-green-500 text-green-600 text-sm font-medium rounded-lg hover:bg-green-50 transition-all"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Mark as Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {tasks.filter(task => !task.completed).length === 0 && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">All Tasks Completed!</h3>
+                  <p className="text-gray-600">Great job! Now share your referral link and start earning.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Training Section Link */}
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-blue-900">Want to learn more?</h4>
+                  <p className="text-sm text-blue-700">Visit our training section for tips on increasing your sales (optional)</p>
+                </div>
+                <Button variant="outline" size="sm" className="border-blue-500 text-blue-600 hover:bg-blue-100">
+                  View Training
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         {/* Referral Link Section */}
         <Card className="mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 border-b">
@@ -458,52 +597,6 @@ export default function SafiraDashboard() {
           </CardContent>
         </Card>
 
-        {/* How It Works */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>How It Works</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl font-bold text-purple-600">1</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Share Your Link</h3>
-                <p className="text-sm text-gray-600">
-                  Copy your unique referral link and share it on your social media
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl font-bold text-purple-600">2</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">People Click & Buy</h3>
-                <p className="text-sm text-gray-600">
-                  When someone clicks your link and makes a purchase on Safira
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl font-bold text-purple-600">3</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Earn $40</h3>
-                <p className="text-sm text-gray-600">
-                  You earn $40 for each successful conversion - one slot gets filled
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl font-bold text-purple-600">4</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Withdraw & Repeat</h3>
-                <p className="text-sm text-gray-600">
-                  Request withdrawal anytime. After 20 slots, start a new cycle!
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Withdraw Modal */}

@@ -204,7 +204,7 @@ export default function InfluencerRegisterPage() {
                     required
                     value={formData.fullName}
                     onChange={(e) => updateFormData('fullName', e.target.value)}
-                    placeholder="John Doe"
+                    placeholder="Elon Musk"
                   />
 
                   <Input
@@ -213,7 +213,7 @@ export default function InfluencerRegisterPage() {
                     required
                     value={formData.username}
                     onChange={(e) => updateFormData('username', e.target.value)}
-                    placeholder="johndoe"
+                    placeholder="elonmusk"
                     helperText="This will be your unique identifier on the platform"
                   />
 
@@ -223,7 +223,7 @@ export default function InfluencerRegisterPage() {
                     required
                     value={formData.email}
                     onChange={(e) => updateFormData('email', e.target.value)}
-                    placeholder="your@email.com"
+                    placeholder="elon@example.com"
                   />
 
                   <Input
@@ -282,7 +282,7 @@ export default function InfluencerRegisterPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Categories <span className="text-red-500">*</span>
+                      Interest Categories <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       {categories.map((category) => (
