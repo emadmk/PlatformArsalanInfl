@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { Badge } from '@/components/shared/Badge';
@@ -308,9 +309,11 @@ export default function SafiraDashboard() {
                   <h4 className="font-semibold text-blue-900">Want to learn more?</h4>
                   <p className="text-sm text-blue-700">Visit our training section for tips on increasing your sales (optional)</p>
                 </div>
-                <Button variant="outline" size="sm" className="border-blue-500 text-blue-600 hover:bg-blue-100">
-                  View Training
-                </Button>
+                <Link href="/dashboard/training">
+                  <Button variant="outline" size="sm" className="border-blue-500 text-blue-600 hover:bg-blue-100">
+                    View Training
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
