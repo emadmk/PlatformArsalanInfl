@@ -47,8 +47,31 @@ export class AuthController {
 
   async registerInfluencer(req: AuthRequest, res: Response): Promise<void> {
     try {
+      const { fullName, firstName: providedFirstName, lastName: providedLastName, ...rest } = req.body;
+
+      let firstName = providedFirstName;
+      let lastName = providedLastName;
+
+      // If firstName/lastName not provided, try to split fullName
+      if (!firstName && fullName) {
+        const nameParts = fullName.trim().split(/\s+/) || [];
+        firstName = nameParts[0] || '';
+        lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+      }
+
+      // Ensure we have values
+      if (!firstName) {
+        res.status(400).json({ error: 'First name is required' });
+        return;
+      }
+      if (!lastName) {
+        lastName = firstName; // Use firstName as lastName if not provided
+      }
+
       const user = await authService.register({
-        ...req.body,
+        ...rest,
+        firstName,
+        lastName,
         role: UserRole.INFLUENCER,
       });
 
@@ -70,8 +93,31 @@ export class AuthController {
 
   async registerBusiness(req: AuthRequest, res: Response): Promise<void> {
     try {
+      const { fullName, firstName: providedFirstName, lastName: providedLastName, ...rest } = req.body;
+
+      let firstName = providedFirstName;
+      let lastName = providedLastName;
+
+      // If firstName/lastName not provided, try to split fullName
+      if (!firstName && fullName) {
+        const nameParts = fullName.trim().split(/\s+/) || [];
+        firstName = nameParts[0] || '';
+        lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+      }
+
+      // Ensure we have values
+      if (!firstName) {
+        res.status(400).json({ error: 'First name is required' });
+        return;
+      }
+      if (!lastName) {
+        lastName = firstName; // Use firstName as lastName if not provided
+      }
+
       const user = await authService.register({
-        ...req.body,
+        ...rest,
+        firstName,
+        lastName,
         role: UserRole.BUSINESS,
       });
 
