@@ -135,7 +135,7 @@ export default function InfluencerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Active Projects</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.activeProjects}</p>
+                  <p className="text-3xl font-bold text-gray-900">{stats.activeProjects || 1}</p>
                 </div>
                 <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
                   <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,11 +150,11 @@ export default function InfluencerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Completed Tasks</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.completedTasks}</p>
+                  <p className="text-sm text-gray-600 mb-1">Safira Slots</p>
+                  <p className="text-3xl font-bold text-gray-900">0/20</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -166,11 +166,11 @@ export default function InfluencerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Earnings</p>
-                  <p className="text-3xl font-bold text-gray-900">${stats.totalEarnings.toFixed(2)}</p>
+                  <p className="text-sm text-gray-600 mb-1">Potential Earnings</p>
+                  <p className="text-3xl font-bold text-green-600">$800.00</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -182,12 +182,12 @@ export default function InfluencerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Pending Payments</p>
-                  <p className="text-3xl font-bold text-gray-900">${stats.pendingPayments.toFixed(2)}</p>
+                  <p className="text-sm text-gray-600 mb-1">Available Balance</p>
+                  <p className="text-3xl font-bold text-gray-900">$0.00</p>
                 </div>
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
               </div>
@@ -207,60 +207,62 @@ export default function InfluencerDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              {recentProjects.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No projects yet</p>
-                  <Link href="/dashboard/projects">
-                    <Button className="mt-4" size="sm">Browse Projects</Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {recentProjects.map((project) => (
-                    <div key={project.id} className="border-b border-gray-200 pb-4 last:border-0">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-semibold text-gray-900">{project.title}</h3>
-                        {getStatusBadge(project.status)}
-                      </div>
-                      <div className="flex justify-between items-center text-sm text-gray-600">
-                        <span>Budget: ${project.budget}</span>
-                        <span>Due: {new Date(project.deadline).toLocaleDateString()}</span>
-                      </div>
+              <div className="space-y-4">
+                {/* Safira Project - Always show */}
+                <Link href="/dashboard/safira">
+                  <div className="border-b border-gray-200 pb-4 hover:bg-gray-50 p-2 rounded-lg transition-all cursor-pointer">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-semibold text-gray-900">Safira Luxury Referral Program</h3>
+                      <Badge variant="success">Active</Badge>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <div className="flex justify-between items-center text-sm text-gray-600">
+                      <span>Earn: $40/referral</span>
+                      <span>Total: $800</span>
+                    </div>
+                  </div>
+                </Link>
+                {recentProjects.map((project) => (
+                  <div key={project.id} className="border-b border-gray-200 pb-4 last:border-0">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-semibold text-gray-900">{project.title}</h3>
+                      {getStatusBadge(project.status)}
+                    </div>
+                    <div className="flex justify-between items-center text-sm text-gray-600">
+                      <span>Budget: ${project.budget}</span>
+                      <span>Due: {new Date(project.deadline).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Recent Tasks */}
+          {/* Safira Tasks */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Tasks</CardTitle>
+              <CardTitle>Safira Tasks</CardTitle>
             </CardHeader>
             <CardContent>
-              {recentTasks.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No tasks yet</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {recentTasks.map((task) => (
-                    <div key={task.id} className="border-b border-gray-200 pb-4 last:border-0">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{task.title}</h3>
-                          <p className="text-xs text-gray-500">{task.projectTitle}</p>
-                        </div>
-                        {getStatusBadge(task.status)}
+              <div className="space-y-4">
+                <Link href="/dashboard/safira">
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 hover:border-purple-400 transition-all cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                        <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Reward: ${task.reward}
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Complete Safira Tasks</h3>
+                        <p className="text-sm text-gray-600">6 tasks to maximize earnings</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
