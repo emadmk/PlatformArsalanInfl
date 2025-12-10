@@ -77,27 +77,25 @@ export default function LandingPage() {
             </p>
             {/* Influencer Hero Image */}
             <div className="mb-8 flex justify-center">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                  alt="Influencers with phones"
-                  className="rounded-2xl shadow-2xl w-full max-w-md"
-                />
-                <div className="absolute -bottom-4 -right-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  Join 50K+ Creators
-                </div>
-              </div>
+              <img
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                alt="Influencers with phones"
+                className="rounded-2xl shadow-2xl w-full max-w-md"
+              />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/register/influencer">
-                <Button size="lg" className="w-full sm:w-auto px-8 py-6 text-lg">
-                  Join as Influencer
-                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Button>
-              </Link>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <div className="text-center">
+                <p className="text-lg font-bold text-primary-600 mb-2">Join 50K+ Creators</p>
+                <Link href="/register/influencer">
+                  <Button size="lg" className="w-full sm:w-auto px-8 py-6 text-lg">
+                    Join as Influencer
+                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </Button>
+                </Link>
+              </div>
               <div className="text-center">
                 <p className="text-lg font-bold text-secondary-600 mb-2">Lowest Price, Highest Effect</p>
                 <Link href="/register/business">
