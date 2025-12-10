@@ -534,6 +534,79 @@ export default function SafiraDashboard() {
           </Card>
         )}
 
+        {/* Top Sellers - Weekly Leaderboard */}
+        <Card className="mb-8 border-2 border-yellow-200">
+          <CardHeader className="bg-gradient-to-r from-yellow-50 to-orange-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <CardTitle className="text-xl text-yellow-900">Top Sellers</CardTitle>
+                  <p className="text-sm text-yellow-700">Weekly Leaderboard - Top 10 get 10% bonus!</p>
+                </div>
+              </div>
+              <Badge variant="warning">This Week</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-gray-100">
+              {[
+                { rank: 1, name: 'Sarah M.', sales: 18, earnings: 720, avatar: null, bonus: true },
+                { rank: 2, name: 'Alex K.', sales: 15, earnings: 600, avatar: null, bonus: true },
+                { rank: 3, name: 'Emma R.', sales: 14, earnings: 560, avatar: null, bonus: true },
+                { rank: 4, name: 'James L.', sales: 12, earnings: 480, avatar: null, bonus: true },
+                { rank: 5, name: 'Mia T.', sales: 11, earnings: 440, avatar: null, bonus: true },
+                { rank: 6, name: 'Noah B.', sales: 10, earnings: 400, avatar: null, bonus: true },
+                { rank: 7, name: 'Sophia H.', sales: 9, earnings: 360, avatar: null, bonus: true },
+                { rank: 8, name: 'Oliver D.', sales: 8, earnings: 320, avatar: null, bonus: true },
+                { rank: 9, name: 'Isabella P.', sales: 7, earnings: 280, avatar: null, bonus: true },
+                { rank: 10, name: 'Lucas G.', sales: 6, earnings: 240, avatar: null, bonus: true },
+              ].map((seller, index) => (
+                <div key={index} className={`flex items-center gap-4 p-4 ${seller.rank <= 3 ? 'bg-yellow-50/50' : ''}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${
+                    seller.rank === 1 ? 'bg-yellow-400 text-yellow-900' :
+                    seller.rank === 2 ? 'bg-gray-300 text-gray-700' :
+                    seller.rank === 3 ? 'bg-orange-400 text-orange-900' :
+                    'bg-gray-100 text-gray-600'
+                  }`}>
+                    {seller.rank <= 3 ? (
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                    ) : seller.rank}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-900">{seller.name}</span>
+                      {seller.rank <= 3 && (
+                        <Badge variant={seller.rank === 1 ? 'warning' : seller.rank === 2 ? 'gray' : 'primary'} className="text-xs">
+                          {seller.rank === 1 ? 'Top Seller' : seller.rank === 2 ? '2nd Place' : '3rd Place'}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500">{seller.sales} sales this week</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-green-600">${seller.earnings}</p>
+                    {seller.bonus && (
+                      <p className="text-xs text-yellow-600 font-medium">+10% bonus</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="p-4 bg-gradient-to-r from-yellow-100 to-orange-100 text-center">
+              <p className="text-sm text-yellow-800">
+                <span className="font-semibold">Get into Top 10</span> to earn a 10% bonus on all your sales this week!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Recent Conversions */}
         <Card>
           <CardHeader>

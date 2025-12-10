@@ -273,11 +273,18 @@ export default function InfluencerDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Link href="/dashboard/safira">
                 <div className="p-4 border-2 border-purple-200 bg-purple-50 rounded-lg hover:border-purple-500 hover:shadow-md transition-all cursor-pointer">
                   <h3 className="font-semibold text-purple-900 mb-2">Safira Program</h3>
                   <p className="text-sm text-purple-600">Earn $40 per referral</p>
+                </div>
+              </Link>
+
+              <Link href="/dashboard/offers">
+                <div className="p-4 border-2 border-orange-200 bg-orange-50 rounded-lg hover:border-orange-500 hover:shadow-md transition-all cursor-pointer">
+                  <h3 className="font-semibold text-orange-900 mb-2">Hot Offers</h3>
+                  <p className="text-sm text-orange-600">Create offers for businesses</p>
                 </div>
               </Link>
 

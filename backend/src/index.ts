@@ -59,6 +59,7 @@ app.use(`${config.apiPrefix}/payment`, require('./routes/payment.routes').defaul
 app.use(`${config.apiPrefix}/admin`, require('./routes/admin.routes').default);
 app.use(`${config.apiPrefix}/cms`, require('./routes/cms.routes').default);
 app.use(`${config.apiPrefix}/upload`, require('./routes/upload.routes').default);
+app.use(`${config.apiPrefix}/offers`, require('./routes/offer.routes').default);
 
 // Safira Integration Routes
 app.use(`${config.apiPrefix}/webhooks`, require('./routes/safira-webhook.routes').default);

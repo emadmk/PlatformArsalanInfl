@@ -31,9 +31,14 @@ router.get('/:id', async (req: AuthRequest, res: Response) => {
 router.post('/', async (req: AuthRequest, res: Response) => {
   try {
     const chat = await chatService.createChat({
-      ...req.body,
+      type: req.body.type || 'direct', // Default to direct chat
       participants: [req.user!.id, ...req.body.participants],
+      projectId: req.body.projectId,
+      name: req.body.name,
     });
+
+    // Populate participants before returning
+    await chat.populate('participants', 'firstName lastName avatar role');
 
     res.status(201).json({ chat });
   } catch (error: any) {

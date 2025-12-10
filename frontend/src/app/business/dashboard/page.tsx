@@ -272,7 +272,14 @@ export default function BusinessDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Link href="/business/offers">
+                <div className="p-4 border-2 border-orange-200 bg-orange-50 rounded-lg hover:border-orange-500 hover:shadow-md transition-all cursor-pointer">
+                  <h3 className="font-semibold text-orange-900 mb-2">Hot Offers!</h3>
+                  <p className="text-sm text-orange-600">Browse influencer offers</p>
+                </div>
+              </Link>
+
               <Link href="/business/projects/new">
                 <div className="p-4 border border-gray-200 rounded-lg hover:border-secondary-500 hover:shadow-md transition-all cursor-pointer">
                   <h3 className="font-semibold text-gray-900 mb-2">Create Campaign</h3>
