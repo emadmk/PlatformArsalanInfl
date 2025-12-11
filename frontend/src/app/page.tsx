@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/shared/Button';
 import { Card, CardContent } from '@/components/shared/Card';
 
@@ -15,6 +16,72 @@ export default function LandingPage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const brandLogos = [
+    { name: 'Nike', color: 'text-gray-700' },
+    { name: 'Adidas', color: 'text-gray-700' },
+    { name: 'Apple', color: 'text-gray-700' },
+    { name: 'Samsung', color: 'text-gray-700' },
+    { name: 'Amazon', color: 'text-gray-700' },
+    { name: 'Google', color: 'text-gray-700' },
+  ];
+
+  const influencerReviews = [
+    {
+      name: 'Sarah Johnson',
+      role: 'Lifestyle Influencer',
+      followers: '45K followers',
+      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+      review: 'I started with just 5K followers and now earn $2,000+ monthly. This platform changed my life!',
+      rating: 5,
+      earnings: '$8,500',
+    },
+    {
+      name: 'Mike Chen',
+      role: 'Food Blogger',
+      followers: '28K followers',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+      review: 'The daily cashout feature is amazing. I get paid instantly for every campaign.',
+      rating: 5,
+      earnings: '$5,200',
+    },
+    {
+      name: 'Emma Davis',
+      role: 'Fashion Creator',
+      followers: '62K followers',
+      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
+      review: 'Best platform for micro-influencers. Brands actually value authentic engagement here.',
+      rating: 5,
+      earnings: '$12,300',
+    },
+  ];
+
+  const businessReviews = [
+    {
+      name: 'TechStart Inc.',
+      role: 'SaaS Company',
+      image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop',
+      review: 'We got 300% ROI on our first campaign. The micro-influencers here have real engagement.',
+      rating: 5,
+      campaigns: 15,
+    },
+    {
+      name: 'BeautyBox Co.',
+      role: 'E-commerce Brand',
+      image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop',
+      review: 'Finding the right influencers used to take weeks. Now it takes minutes. Amazing platform!',
+      rating: 5,
+      campaigns: 32,
+    },
+    {
+      name: 'FitLife Nutrition',
+      role: 'Health & Wellness',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop',
+      review: 'The verified influencer system gives us confidence. No fake followers, real results.',
+      rating: 5,
+      campaigns: 24,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50">
@@ -41,8 +108,8 @@ export default function LandingPage() {
                 <a href="#how-it-works" className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   How It Works
                 </a>
-                <a href="#guarantee" className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                  Guarantee
+                <a href="#reviews" className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Reviews
                 </a>
                 <Link href="/login">
                   <Button variant="outline" size="sm">Login</Button>
@@ -59,53 +126,91 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <div className="inline-block mb-4">
-              <span className="px-4 py-2 rounded-full bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 text-sm font-semibold">
-                🚀 The Future of Media Marketing
-              </span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
-              Connect Brands with
-              <span className="block bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent">
-                Authentic Influencers
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              The ultimate platform for influencer marketing campaigns with transparent pricing,
-              secure crypto payments, and real-time collaboration.
-            </p>
-            {/* Influencer Hero Image */}
-            <div className="mb-8 flex justify-center">
-              <img
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                alt="Influencers with phones"
-                className="rounded-2xl shadow-2xl w-full max-w-md"
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div>
+              <div className="inline-block mb-4">
+                <span className="px-4 py-2 rounded-full bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 text-sm font-semibold">
+                  The Future of Media Marketing
+                </span>
+              </div>
+              <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+                Connect Brands with
+                <span className="block bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent">
+                  Authentic Influencers
+                </span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                The ultimate platform for influencer marketing campaigns with transparent pricing,
+                secure crypto payments, and real-time collaboration.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <div className="text-center sm:text-left">
+                  <p className="text-sm font-semibold text-primary-600 mb-2">
+                    Size doesn't matter. Your voice does. Start earning today.
+                  </p>
+                  <Link href="/register/influencer">
+                    <Button size="lg" className="w-full sm:w-auto px-8 py-4 text-lg">
+                      Free Influencer Account
+                      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </Button>
+                  </Link>
+                </div>
+                <div className="text-center sm:text-left">
+                  <p className="text-sm font-semibold text-secondary-600 mb-2">
+                    Lowest Price, Highest Effect
+                  </p>
+                  <Link href="/register/business">
+                    <Button size="lg" variant="secondary" className="w-full sm:w-auto px-8 py-4 text-lg">
+                      Free Business Account
+                      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <div className="text-center">
-                <p className="text-lg font-bold text-primary-600 mb-2">Join 50K+ Creators</p>
-                <Link href="/register/influencer">
-                  <Button size="lg" className="w-full sm:w-auto px-8 py-6 text-lg">
-                    Join as Influencer
-                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </Button>
-                </Link>
+            {/* Right - Hero Image */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="/hero.jpg"
+                  alt="Influencer Marketing"
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
-              <div className="text-center">
-                <p className="text-lg font-bold text-secondary-600 mb-2">Lowest Price, Highest Effect</p>
-                <Link href="/register/business">
-                  <Button size="lg" variant="secondary" className="w-full sm:w-auto px-8 py-6 text-lg">
-                    Start as Business
-                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              {/* Floating Stats */}
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                  </Button>
-                </Link>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">$10M+</p>
+                    <p className="text-sm text-gray-500">Paid to Creators</p>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-xl p-4 border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">50K+</p>
+                    <p className="text-sm text-gray-500">Active Creators</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -130,6 +235,20 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Brand Logos */}
+      <section className="py-12 bg-white border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-500 mb-8 text-sm font-medium">TRUSTED BY LEADING BRANDS WORLDWIDE</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+            {brandLogos.map((brand, index) => (
+              <div key={index} className="text-2xl font-bold text-gray-300 hover:text-gray-500 transition-colors">
+                {brand.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,49 +261,96 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: '🔐',
-                title: 'Crypto Payments',
-                description: 'Secure USDT payments on Ethereum, BSC, and Tron networks with instant settlements',
-              },
-              {
-                icon: '✅',
-                title: 'Verified Influencers',
-                description: 'All influencers verified through official social media APIs for authenticity',
-              },
-              {
-                icon: '💬',
-                title: 'Real-time Chat',
-                description: 'Direct messaging with typing indicators and read receipts for seamless communication',
-              },
-              {
-                icon: '📊',
-                title: 'Advanced Analytics',
-                description: 'Track campaign performance, ROI, and engagement metrics in real-time',
-              },
-              {
-                icon: '🌍',
-                title: 'World Wide',
-                description: 'Connect with influencers and brands from around the globe',
-              },
-              {
-                icon: '🛡️',
-                title: 'Secure & Trusted',
-                description: 'Enterprise-grade security with escrow system for safe transactions',
-              },
-            ].map((feature, index) => (
-              <Card key={index} hover className="group">
-                <CardContent className="p-8">
-                  <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="order-2 lg:order-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {[
+                  {
+                    icon: '🔐',
+                    title: 'Crypto Payments',
+                    description: 'Secure USDT payments on Ethereum, BSC, and Tron networks',
+                  },
+                  {
+                    icon: '✅',
+                    title: 'Verified Influencers',
+                    description: 'All influencers verified through official social media APIs',
+                  },
+                  {
+                    icon: '💬',
+                    title: 'Real-time Chat',
+                    description: 'Direct messaging with typing indicators and read receipts',
+                  },
+                  {
+                    icon: '📊',
+                    title: 'Advanced Analytics',
+                    description: 'Track campaign performance, ROI, and engagement metrics',
+                  },
+                ].map((feature, index) => (
+                  <Card key={index} hover className="group">
+                    <CardContent className="p-6">
+                      <div className="text-4xl mb-3 transform group-hover:scale-110 transition-transform">
+                        {feature.icon}
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-gray-600 text-sm">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            <div className="order-1 lg:order-2">
+              <img
+                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop"
+                alt="Dashboard Analytics"
+                className="rounded-2xl shadow-xl w-full"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <img
+                src="https://images.unsplash.com/photo-1552581234-26160f608093?w=600&h=400&fit=crop"
+                alt="Team Collaboration"
+                className="rounded-2xl shadow-xl w-full"
+              />
+            </div>
+            <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {[
+                  {
+                    icon: '🌍',
+                    title: 'World Wide',
+                    description: 'Connect with influencers and brands from around the globe',
+                  },
+                  {
+                    icon: '🛡️',
+                    title: 'Secure & Trusted',
+                    description: 'Enterprise-grade security with escrow system',
+                  },
+                  {
+                    icon: '⚡',
+                    title: 'Instant Payouts',
+                    description: 'Get paid instantly after campaign completion',
+                  },
+                  {
+                    icon: '🎯',
+                    title: 'Smart Matching',
+                    description: 'AI-powered matching with the right brands',
+                  },
+                ].map((feature, index) => (
+                  <Card key={index} hover className="group">
+                    <CardContent className="p-6">
+                      <div className="text-4xl mb-3 transform group-hover:scale-110 transition-transform">
+                        {feature.icon}
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-gray-600 text-sm">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -203,7 +369,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* For Influencers */}
-            <div>
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
               <h3 className="text-2xl font-bold text-primary-600 mb-8 flex items-center">
                 <span className="bg-primary-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
                   💰
@@ -232,7 +398,7 @@ export default function LandingPage() {
             </div>
 
             {/* For Businesses */}
-            <div>
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
               <h3 className="text-2xl font-bold text-secondary-600 mb-8 flex items-center">
                 <span className="bg-secondary-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
                   🚀
@@ -263,8 +429,93 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Reviews Section */}
+      <section id="reviews" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              What Our Users Say
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Real stories from real creators and businesses
+            </p>
+          </div>
+
+          {/* Influencer Reviews */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-bold text-primary-600 mb-8 text-center">Influencer Success Stories</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {influencerReviews.map((review, index) => (
+                <Card key={index} hover className="bg-gradient-to-br from-primary-50 to-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={review.image}
+                        alt={review.name}
+                        className="w-14 h-14 rounded-full object-cover border-2 border-primary-200"
+                      />
+                      <div>
+                        <h4 className="font-bold text-gray-900">{review.name}</h4>
+                        <p className="text-sm text-gray-500">{review.role}</p>
+                        <p className="text-xs text-primary-600">{review.followers}</p>
+                      </div>
+                    </div>
+                    <div className="flex mb-3">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-600 mb-4 italic">"{review.review}"</p>
+                    <div className="bg-green-100 rounded-lg px-3 py-2 inline-block">
+                      <span className="text-green-700 font-bold">Total Earned: {review.earnings}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Business Reviews */}
+          <div>
+            <h3 className="text-2xl font-bold text-secondary-600 mb-8 text-center">Business Success Stories</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {businessReviews.map((review, index) => (
+                <Card key={index} hover className="bg-gradient-to-br from-secondary-50 to-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={review.image}
+                        alt={review.name}
+                        className="w-14 h-14 rounded-full object-cover border-2 border-secondary-200"
+                      />
+                      <div>
+                        <h4 className="font-bold text-gray-900">{review.name}</h4>
+                        <p className="text-sm text-gray-500">{review.role}</p>
+                      </div>
+                    </div>
+                    <div className="flex mb-3">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-600 mb-4 italic">"{review.review}"</p>
+                    <div className="bg-blue-100 rounded-lg px-3 py-2 inline-block">
+                      <span className="text-blue-700 font-bold">{review.campaigns} Campaigns Completed</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Guarantee Section */}
-      <section id="guarantee" className="py-20 bg-white">
+      <section id="guarantee" className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -349,8 +600,15 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-600 to-secondary-600">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-r from-primary-600 to-secondary-600 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <img
+            src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=600&fit=crop"
+            alt="Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Get Started?
           </h2>

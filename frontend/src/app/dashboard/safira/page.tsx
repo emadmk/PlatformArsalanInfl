@@ -219,19 +219,219 @@ export default function SafiraDashboard() {
     );
   }
 
+  // Calculate platform total income
+  const platformTotalIncome = 847520; // Mock data - total platform earnings
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardNavbar />
 
-      {/* Page Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+      {/* Page Header with Money/Gift Element */}
+      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-white relative overflow-hidden">
+        <div className="absolute right-0 top-0 opacity-20">
+          <svg className="w-64 h-64 -mt-16 -mr-16" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M100 0L120 60H180L130 100L150 160L100 120L50 160L70 100L20 60H80L100 0Z" />
+          </svg>
+        </div>
+        <div className="absolute left-10 bottom-0 opacity-10">
+          <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+          </svg>
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-2xl font-bold">Safira Luxury Program</h1>
-          <p className="text-purple-100 mt-1">Earn $40 for every successful referral</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold flex items-center gap-3">
+                Safira Luxury Program
+                <span className="text-3xl">💎</span>
+              </h1>
+              <p className="text-purple-100 mt-1">Earn $40 for every successful referral</p>
+            </div>
+            <div className="hidden md:flex items-center gap-4">
+              <div className="text-center px-4 py-2 bg-white/10 rounded-xl backdrop-blur-sm">
+                <p className="text-3xl">🎁</p>
+                <p className="text-xs text-purple-200">Fill 20 slots</p>
+                <p className="text-sm font-bold">Get $800!</p>
+              </div>
+              <div className="text-center px-4 py-2 bg-white/10 rounded-xl backdrop-blur-sm">
+                <p className="text-3xl">💰</p>
+                <p className="text-xs text-purple-200">Daily</p>
+                <p className="text-sm font-bold">Cashout</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Quick Actions - Horizontal at Top */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <button
+            onClick={() => copyToClipboard(data.overview.referralUrl, 'quick')}
+            className="flex items-center justify-center gap-2 p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+            <span className="font-semibold">{copySuccess === 'quick' ? 'Copied!' : 'Copy Link'}</span>
+          </button>
+          <Link href="/dashboard/training" className="flex items-center justify-center gap-2 p-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all shadow-lg">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span className="font-semibold">Training</span>
+          </Link>
+          <button
+            onClick={() => data.earnings.availableBalance > 0 && setShowWithdrawModal(true)}
+            className={`flex items-center justify-center gap-2 p-4 rounded-xl transition-all shadow-lg ${
+              data.earnings.availableBalance > 0
+                ? 'bg-green-500 text-white hover:bg-green-600'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span className="font-semibold">Withdraw</span>
+          </button>
+          <a
+            href="https://www.instagram.com/safiralux.co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 p-4 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-xl hover:from-pink-600 hover:to-orange-600 transition-all shadow-lg"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+            </svg>
+            <span className="font-semibold">Follow Us</span>
+          </a>
+        </div>
+
+        {/* Earnings Grid with Total Income */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+            <CardContent className="p-4">
+              <p className="text-purple-100 text-sm mb-1">Total Locked</p>
+              <p className="text-2xl font-bold">${data.earnings.totalLocked}</p>
+              <p className="text-purple-200 text-xs mt-1">
+                {data.slots.empty} slots × ${data.earnings.amountPerSlot}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
+            <CardContent className="p-4">
+              <p className="text-green-100 text-sm mb-1">Total Earned</p>
+              <p className="text-2xl font-bold">${data.earnings.totalEarned}</p>
+              <p className="text-green-200 text-xs mt-1">
+                {data.slots.filled} conversions
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+            <CardContent className="p-4">
+              <p className="text-blue-100 text-sm mb-1">Available Balance</p>
+              <p className="text-2xl font-bold">${data.earnings.availableBalance}</p>
+              <p className="text-blue-200 text-xs mt-1">Ready to withdraw</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-gray-600 to-gray-700 text-white">
+            <CardContent className="p-4">
+              <p className="text-gray-300 text-sm mb-1">Total Withdrawn</p>
+              <p className="text-2xl font-bold">${data.earnings.totalWithdrawn}</p>
+              <p className="text-gray-400 text-xs mt-1">All time</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 text-white border-2 border-yellow-300">
+            <CardContent className="p-4">
+              <p className="text-yellow-100 text-sm mb-1 flex items-center gap-1">
+                <span>Platform Total</span>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </p>
+              <p className="text-2xl font-bold">${platformTotalIncome.toLocaleString()}</p>
+              <p className="text-yellow-200 text-xs mt-1">Paid to all creators</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Top Sellers - Weekly Leaderboard with $1000+ earners */}
+        <Card className="mb-8 border-2 border-yellow-200">
+          <CardHeader className="bg-gradient-to-r from-yellow-50 to-orange-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <CardTitle className="text-xl text-yellow-900">Top Sellers</CardTitle>
+                  <p className="text-sm text-yellow-700">Monthly Leaderboard - Top 10 get 10% bonus!</p>
+                </div>
+              </div>
+              <Badge variant="warning">This Month</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-gray-100">
+              {[
+                { rank: 1, name: 'Sarah M.', sales: 42, earnings: 2520, avatar: null, bonus: true },
+                { rank: 2, name: 'Alex K.', sales: 38, earnings: 2280, avatar: null, bonus: true },
+                { rank: 3, name: 'Emma R.', sales: 35, earnings: 2100, avatar: null, bonus: true },
+                { rank: 4, name: 'James L.', sales: 31, earnings: 1860, avatar: null, bonus: true },
+                { rank: 5, name: 'Mia T.', sales: 28, earnings: 1680, avatar: null, bonus: true },
+                { rank: 6, name: 'Noah B.', sales: 26, earnings: 1560, avatar: null, bonus: true },
+                { rank: 7, name: 'Sophia H.', sales: 24, earnings: 1440, avatar: null, bonus: true },
+                { rank: 8, name: 'Oliver D.', sales: 22, earnings: 1320, avatar: null, bonus: true },
+                { rank: 9, name: 'Isabella P.', sales: 20, earnings: 1200, avatar: null, bonus: true },
+                { rank: 10, name: 'Lucas G.', sales: 18, earnings: 1080, avatar: null, bonus: true },
+              ].map((seller, index) => (
+                <div key={index} className={`flex items-center gap-4 p-4 ${seller.rank <= 3 ? 'bg-yellow-50/50' : ''}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${
+                    seller.rank === 1 ? 'bg-yellow-400 text-yellow-900' :
+                    seller.rank === 2 ? 'bg-gray-300 text-gray-700' :
+                    seller.rank === 3 ? 'bg-orange-400 text-orange-900' :
+                    'bg-gray-100 text-gray-600'
+                  }`}>
+                    {seller.rank <= 3 ? (
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                    ) : seller.rank}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-900">{seller.name}</span>
+                      {seller.rank <= 3 && (
+                        <Badge variant={seller.rank === 1 ? 'warning' : seller.rank === 2 ? 'gray' : 'primary'} className="text-xs">
+                          {seller.rank === 1 ? 'Top Seller' : seller.rank === 2 ? '2nd Place' : '3rd Place'}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500">{seller.sales} sales this month</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-green-600 text-lg">${seller.earnings.toLocaleString()}</p>
+                    {seller.bonus && (
+                      <p className="text-xs text-yellow-600 font-medium">+10% bonus</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="p-4 bg-gradient-to-r from-yellow-100 to-orange-100 text-center">
+              <p className="text-sm text-yellow-800">
+                <span className="font-semibold">Top 5 earn over $1,500/month!</span> 20 slots is nothing - you can do it too!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Quick Start Tasks - How It Works */}
         <Card className="mb-8 border-2 border-purple-200">
           <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
@@ -318,6 +518,7 @@ export default function SafiraDashboard() {
             </div>
           </CardContent>
         </Card>
+
         {/* Referral Link Section */}
         <Card className="mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 border-b">
@@ -423,54 +624,6 @@ export default function SafiraDashboard() {
           </CardContent>
         </Card>
 
-        {/* Earnings Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-            <CardContent className="p-6">
-              <p className="text-purple-100 text-sm mb-1">Total Locked</p>
-              <p className="text-3xl font-bold">${data.earnings.totalLocked}</p>
-              <p className="text-purple-200 text-xs mt-2">
-                {data.slots.empty} slots × ${data.earnings.amountPerSlot}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
-            <CardContent className="p-6">
-              <p className="text-green-100 text-sm mb-1">Total Earned</p>
-              <p className="text-3xl font-bold">${data.earnings.totalEarned}</p>
-              <p className="text-green-200 text-xs mt-2">
-                {data.slots.filled} conversions
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-            <CardContent className="p-6">
-              <p className="text-blue-100 text-sm mb-1">Available Balance</p>
-              <p className="text-3xl font-bold">${data.earnings.availableBalance}</p>
-              {data.earnings.availableBalance > 0 && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="mt-2 border-white text-white hover:bg-white/10"
-                  onClick={() => setShowWithdrawModal(true)}
-                >
-                  Withdraw
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-gray-600 to-gray-700 text-white">
-            <CardContent className="p-6">
-              <p className="text-gray-300 text-sm mb-1">Total Withdrawn</p>
-              <p className="text-3xl font-bold">${data.earnings.totalWithdrawn}</p>
-              <p className="text-gray-400 text-xs mt-2">All time</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card>
@@ -536,79 +689,6 @@ export default function SafiraDashboard() {
             </CardContent>
           </Card>
         )}
-
-        {/* Top Sellers - Weekly Leaderboard */}
-        <Card className="mb-8 border-2 border-yellow-200">
-          <CardHeader className="bg-gradient-to-r from-yellow-50 to-orange-50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <CardTitle className="text-xl text-yellow-900">Top Sellers</CardTitle>
-                  <p className="text-sm text-yellow-700">Weekly Leaderboard - Top 10 get 10% bonus!</p>
-                </div>
-              </div>
-              <Badge variant="warning">This Week</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-gray-100">
-              {[
-                { rank: 1, name: 'Sarah M.', sales: 18, earnings: 720, avatar: null, bonus: true },
-                { rank: 2, name: 'Alex K.', sales: 15, earnings: 600, avatar: null, bonus: true },
-                { rank: 3, name: 'Emma R.', sales: 14, earnings: 560, avatar: null, bonus: true },
-                { rank: 4, name: 'James L.', sales: 12, earnings: 480, avatar: null, bonus: true },
-                { rank: 5, name: 'Mia T.', sales: 11, earnings: 440, avatar: null, bonus: true },
-                { rank: 6, name: 'Noah B.', sales: 10, earnings: 400, avatar: null, bonus: true },
-                { rank: 7, name: 'Sophia H.', sales: 9, earnings: 360, avatar: null, bonus: true },
-                { rank: 8, name: 'Oliver D.', sales: 8, earnings: 320, avatar: null, bonus: true },
-                { rank: 9, name: 'Isabella P.', sales: 7, earnings: 280, avatar: null, bonus: true },
-                { rank: 10, name: 'Lucas G.', sales: 6, earnings: 240, avatar: null, bonus: true },
-              ].map((seller, index) => (
-                <div key={index} className={`flex items-center gap-4 p-4 ${seller.rank <= 3 ? 'bg-yellow-50/50' : ''}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${
-                    seller.rank === 1 ? 'bg-yellow-400 text-yellow-900' :
-                    seller.rank === 2 ? 'bg-gray-300 text-gray-700' :
-                    seller.rank === 3 ? 'bg-orange-400 text-orange-900' :
-                    'bg-gray-100 text-gray-600'
-                  }`}>
-                    {seller.rank <= 3 ? (
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                      </svg>
-                    ) : seller.rank}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900">{seller.name}</span>
-                      {seller.rank <= 3 && (
-                        <Badge variant={seller.rank === 1 ? 'warning' : seller.rank === 2 ? 'gray' : 'primary'} className="text-xs">
-                          {seller.rank === 1 ? 'Top Seller' : seller.rank === 2 ? '2nd Place' : '3rd Place'}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-500">{seller.sales} sales this week</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-green-600">${seller.earnings}</p>
-                    {seller.bonus && (
-                      <p className="text-xs text-yellow-600 font-medium">+10% bonus</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="p-4 bg-gradient-to-r from-yellow-100 to-orange-100 text-center">
-              <p className="text-sm text-yellow-800">
-                <span className="font-semibold">Get into Top 10</span> to earn a 10% bonus on all your sales this week!
-              </p>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Recent Conversions */}
         <Card>
