@@ -2,9 +2,9 @@
 
 ## Overview
 
-This document describes the API integration between **Safira Luxury (safiralux.com)** and **MicroInfluencer Platform (arsalan.safiralux.com)**.
+This document describes the API integration between **Safira Luxury (safiralux.com)** and **MicroInfluencer Platform (microcollabhub.com)**.
 
-**Base URL:** `https://arsalan.safiralux.com/api/v1`
+**Base URL:** `https://microcollabhub.com/api/v1`
 
 ---
 
@@ -31,7 +31,7 @@ Headers:
 **Safira (.env):**
 ```
 EXTERNAL_API_KEY=safira-external-key-2024
-MICROINFLUENCER_API_URL=https://arsalan.safiralux.com/api/v1
+MICROINFLUENCER_API_URL=https://microcollabhub.com/api/v1
 MICROINFLUENCER_API_KEY=microinfluencer-key-2024
 ```
 
@@ -347,7 +347,7 @@ https://safiralux.com/invest?ref=INF_ABC123&utm_source=INF_ABC123&utm_medium=ins
 
 ### Test Webhook (Tracking Event)
 ```bash
-curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-tracking \
+curl -X POST https://microcollabhub.com/api/v1/webhooks/safira-tracking \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer microinfluencer-key-2024" \
   -d '{
@@ -360,7 +360,7 @@ curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-tracking \
 
 ### Test Webhook (Conversion)
 ```bash
-curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-conversion \
+curl -X POST https://microcollabhub.com/api/v1/webhooks/safira-conversion \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer microinfluencer-key-2024" \
   -d '{
@@ -376,13 +376,13 @@ curl -X POST https://arsalan.safiralux.com/api/v1/webhooks/safira-conversion \
 
 ### Test API (Get Influencer)
 ```bash
-curl -X GET https://arsalan.safiralux.com/api/v1/influencers/INF_ABC123 \
+curl -X GET https://microcollabhub.com/api/v1/influencers/INF_ABC123 \
   -H "Authorization: Bearer microinfluencer-key-2024"
 ```
 
 ### Test API (Get Active Influencers)
 ```bash
-curl -X GET https://arsalan.safiralux.com/api/v1/influencers/active \
+curl -X GET https://microcollabhub.com/api/v1/influencers/active \
   -H "Authorization: Bearer microinfluencer-key-2024"
 ```
 
@@ -391,7 +391,7 @@ curl -X GET https://arsalan.safiralux.com/api/v1/influencers/active \
 ## Contact
 
 For integration support:
-- Platform: arsalan.safiralux.com
+- Platform: microcollabhub.com
 - Technical Contact: [Your contact info]
 
 ---
